@@ -1,0 +1,59 @@
+{
+  "name": "Reina-Valera 1960",
+  "abbr": "RV1960",
+  "books": [
+    {
+      "name": "Génesis",
+      "chapters": {
+        "1": {
+          "1": "En el principio creó Dios los cielos y la tierra.",
+          "2": "Y la tierra estaba desordenada y vacía, y las tinieblas estaban sobre la faz del abismo, y el Espíritu de Dios se movía sobre la faz de las aguas.",
+          "3": "Y dijo Dios: Sea la luz; y fue la luz.",
+          "4": "Y vio Dios que la luz era buena; y separó Dios la luz de las tinieblas.",
+          "5": "Y llamó Dios a la luz Día, y a las tinieblas llamó Noche. Y fue la tarde y la mañana un día."
+        }
+      }
+    },
+    {
+      "name": "Salmos",
+      "chapters": {
+        "23": {
+          "1": "Jehová es mi pastor; nada me faltará.",
+          "2": "En lugares de delicados pastos me hará descansar; junto a aguas de reposo me pastoreará.",
+          "3": "Confortará mi alma; me guiará por sendas de justicia por amor de su nombre.",
+          "4": "Aunque ande en valle de sombra de muerte, no temeré mal alguno, porque tú estarás conmigo; tu vara y tu cayado me infundirán aliento.",
+          "5": "Aderezas mesa delante de mí en presencia de mis angustiadores; unges mi cabeza con aceite; mi copa está rebosando.",
+          "6": "Ciertamente el bien y la misericordia me seguirán todos los días de mi vida, y en la casa de Jehová moraré por largos días."
+        },
+        "100": {
+          "1": "Cantad alegres a Dios, habitantes de toda la tierra.",
+          "2": "Servid a Jehová con alegría; venid ante su presencia con regocijo.",
+          "3": "Reconoced que Jehová es Dios; él nos hizo, y no nosotros a nosotros mismos; pueblo suyo somos, y ovejas de su prado.",
+          "4": "Entrad por sus puertas con acción de gracias, por sus atrios con alabanza; alabadle, bendecid su nombre.",
+          "5": "Porque Jehová es bueno; para siempre es su misericordia, y su verdad por todas las generaciones."
+        }
+      }
+    },
+    {
+      "name": "Juan",
+      "chapters": {
+        "3": {
+          "16": "Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",
+          "17": "Porque no envió Dios a su Hijo al mundo para condenar al mundo, sino para que el mundo sea salvo por él."
+        },
+        "14": {
+          "6": "Jesús le dijo: Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí."
+        }
+      }
+    },
+    {
+      "name": "Filipenses",
+      "chapters": {
+        "4": {
+          "13": "Todo lo puedo en Cristo que me fortalece.",
+          "19": "Mi Dios, pues, suplirá todo lo que os falte conforme a sus riquezas en gloria en Cristo Jesús."
+        }
+      }
+    }
+  ]
+}

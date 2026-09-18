@@ -1,0 +1,18 @@
+{
+  "id": "elias",
+  "title": "Elias",
+  "author": "Desconocido",
+  "slides": [
+    {
+      "id": "slide-1787885320079-1",
+      "label": "V1",
+      "text": "Escribe aquí la letra...",
+      "overlays": [],
+      "style": {
+        "fontSize": "62px"
+      }
+    }
+  ],
+  "filePath": "Canciones/elias.json",
+  "section": "Canciones"
+}

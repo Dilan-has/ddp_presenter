@@ -1,0 +1,287 @@
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><style>@layer base{html,body{margin:0;padding:0;overflow:hidden;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"tertiary-fixed":"#6bff8f","surface-bright":"#31394d","on-surface-variant":"#c2c6d6","outline-variant":"#424754","surface-container-high":"#222a3d","on-surface":"#dae2fd","on-error":"#690005","error":"#ffb4ab","surface-tint":"#adc6ff","on-background":"#dae2fd","on-tertiary-fixed-variant":"#005321","on-tertiary":"#003915","surface-container-lowest":"#060e20","on-secondary-fixed-variant":"#930013","on-tertiary-fixed":"#002109","on-secondary-fixed":"#410004","on-primary-fixed":"#001a42","primary":"#adc6ff","on-primary":"#002e6a","on-secondary-container":"#ffaea8","secondary-fixed-dim":"#ffb3ad","on-tertiary-container":"#003111","surface-container":"#171f33","tertiary-container":"#00a74b","secondary-container":"#a40217","surface-container-low":"#131b2e","on-primary-container":"#00285d","inverse-on-surface":"#283044","surface-container-highest":"#2d3449","tertiary-fixed-dim":"#4ae176","on-secondary":"#68000a","primary-fixed-dim":"#adc6ff","surface":"#0b1326","outline":"#8c909f","on-primary-fixed-variant":"#004395","background":"#0b1326","inverse-primary":"#005ac2","surface-dim":"#0b1326","primary-container":"#4d8eff","surface-variant":"#2d3449","error-container":"#93000a","secondary-fixed":"#ffdad7","tertiary":"#4ae176","on-error-container":"#ffdad6","inverse-surface":"#dae2fd","primary-fixed":"#d8e2ff","secondary":"#ffb3ad"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"item-gap":"4px","thumbnail-grid-gap":"12px","container-padding":"8px","panel-gap":"1px"},"fontFamily":{"display-live":["Inter"],"headline-sm":["Inter"],"body-sm":["Inter"],"body-md":["Inter"],"label-caps":["Inter"],"mono-label":["JetBrains Mono"]},"fontSize":{"display-live":["24px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-sm":["16px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"20px","fontWeight":"400"}],"label-caps":["11px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"700"}],"mono-label":["12px",{"lineHeight":"16px","fontWeight":"500"}]}}}}</script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head><body class="bg-surface text-on-surface font-body-md text-body-md overflow-hidden h-screen flex flex-col"><header class="h-12 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-container-padding z-50"><div class="flex items-center gap-4 text-on-surface-variant font-label-caps text-label-caps"><div class="w-6 h-6 bg-primary rounded flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[16px]">settings_input_component</span></div><nav class="flex gap-4"><button class="hover:text-on-surface transition-colors uppercase">Archivo</button><button class="hover:text-on-surface transition-colors uppercase">Editar</button><button class="hover:text-on-surface transition-colors uppercase">Ver</button></nav></div><div class="flex items-center gap-1 bg-surface-container rounded p-1"><button class="px-3 py-1 text-label-caps font-label-caps uppercase text-error hover:bg-error-container hover:text-on-error-container rounded transition-all">Borrar Todo</button><button class="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded transition-all">Borrar Diapo</button><button class="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded transition-all">Borrar Medios</button><button class="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded transition-all">Borrar Audio</button><button class="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded transition-all">Borrar Mensajes</button></div><div class="flex items-center gap-6"><div class="flex items-center gap-4"><div class="flex flex-col items-end"><span class="text-[9px] font-label-caps uppercase text-on-surface-variant leading-none">Salida Principal</span><span class="text-[10px] font-bold text-tertiary-fixed uppercase leading-tight">VIVO</span></div><div class="flex flex-col items-end"><span class="text-[9px] font-label-caps uppercase text-on-surface-variant leading-none">Monitor Escenario</span><span class="text-[10px] font-bold text-on-surface-variant uppercase leading-tight">APAGADO</span></div></div><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">volume_up</span><input class="w-24 h-1 bg-outline-variant rounded-full appearance-none cursor-pointer accent-primary" type="range"/></div><span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface">settings</span><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><div class="flex-1 flex overflow-hidden bg-surface-dim"><aside class="w-64 bg-surface-container-low border-r border-outline-variant flex flex-col"><nav class="flex flex-col p-container-padding gap-item-gap" data-active-classes="bg-surface-container-highest text-primary"><a aria-current="page" class="flex items-center px-3 py-2 rounded-lg font-bold bg-surface-container-highest text-primary" data-path="production-interface" href="#"><span class="material-symbols-outlined mr-3 text-[20px]">view_quilt</span>Producción</a><a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all" data-path="media-library" href="#"><span class="material-symbols-outlined mr-3 text-[20px]">folder_open</span>Biblioteca</a><a class="flex items-center px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all" data-path="playlists" href="#"><span class="material-symbols-outlined mr-3 text-[20px]">queue_music</span>Listas</a></nav></aside><main class="flex-1 flex flex-col min-w-0 bg-surface-dim"><div class="flex flex-col w-full h-full bg-surface-dim overflow-hidden font-body-md text-on-surface">
+<!-- Main Content Area (Split Left/Center/Right) -->
+<div class="flex-1 flex min-h-0">
+<!-- Left Sidebar: Library & Playlists -->
+<aside class="w-64 bg-surface-container-low flex flex-col flex-shrink-0" style="border-right: 1px solid theme('colors.outline-variant');">
+<div class="p-2 border-b" style="border-color: theme('colors.outline-variant');">
+<div class="relative flex items-center bg-surface-container-highest rounded px-2 py-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-2">search</span>
+<input class="w-full bg-transparent border-none outline-none text-body-sm text-on-surface placeholder:text-outline" placeholder="Buscar..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-4">
+<!-- Libraries -->
+<div>
+<div class="flex items-center text-label-caps font-label-caps text-on-surface-variant uppercase mb-1 px-2">
+<span class="material-symbols-outlined text-[14px] mr-1">expand_more</span>
+                        Bibliotecas
+                    </div>
+<ul class="space-y-[1px]">
+<li>
+<button class="w-full flex items-center px-2 py-1 rounded text-body-sm text-on-surface hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">folder</span>
+                                Predeterminado
+                            </button>
+</li>
+<li>
+<button class="w-full flex items-center px-2 py-1 rounded text-body-sm text-on-surface hover:bg-surface-container-high transition-colors text-left bg-primary/10 border-l-2 border-primary">
+<span class="material-symbols-outlined text-[16px] mr-2 text-primary" style="font-variation-settings: 'FILL' 1;">folder</span>
+                                Canciones
+                            </button>
+</li>
+<li>
+<button class="w-full flex items-center px-2 py-1 rounded text-body-sm text-on-surface hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">folder</span>
+                                Presentaciones
+                            </button>
+</li>
+</ul>
+</div>
+<!-- Playlists -->
+<div>
+<div class="flex items-center text-label-caps font-label-caps text-on-surface-variant uppercase mb-1 px-2">
+<span class="material-symbols-outlined text-[14px] mr-1">expand_more</span>
+                        Listas de Reproducción
+                    </div>
+<ul class="space-y-[1px]">
+<li>
+<button class="w-full flex items-center px-2 py-1 rounded text-body-sm text-on-surface hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">queue_music</span>
+                                Servicio Dominical
+                            </button>
+</li>
+<li>
+<button class="w-full flex items-center px-2 py-1 rounded text-body-sm text-on-surface hover:bg-surface-container-high transition-colors text-left">
+<span class="material-symbols-outlined text-[16px] mr-2 text-on-surface-variant">queue_music</span>
+                                Evento de Jóvenes
+                            </button>
+</li>
+</ul>
+</div>
+</div>
+</aside>
+<!-- Center Panel: Slide Grid -->
+<main class="flex-1 flex flex-col bg-surface min-w-0">
+<!-- Header -->
+<header class="h-12 bg-surface-container border-b flex items-center justify-between px-4 flex-shrink-0" style="border-color: theme('colors.outline-variant');">
+<h1 class="font-headline-sm text-headline-sm text-on-surface truncate">Cuán Grande Es Dios</h1>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded hover:bg-surface-container-highest text-on-surface-variant transition-colors" title="Formato de Texto">
+<span class="material-symbols-outlined text-[18px]">format_bold</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container-highest text-on-surface-variant transition-colors" title="Alineación">
+<span class="material-symbols-outlined text-[18px]">format_align_center</span>
+</button>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<button class="p-1.5 rounded hover:bg-surface-container-highest text-on-surface-variant transition-colors" title="Fondo">
+<span class="material-symbols-outlined text-[18px]">wallpaper</span>
+</button>
+</div>
+</header>
+<!-- Grid Area -->
+<div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-max">
+<!-- Slide 1 -->
+<div class="group relative flex flex-col cursor-pointer">
+<span class="absolute -top-2 -left-2 text-[10px] font-mono-label text-on-surface-variant bg-surface-container-highest px-1 rounded-sm z-10 opacity-0 group-hover:opacity-100 transition-opacity">S1</span>
+<div class="aspect-video bg-black rounded border-2 border-transparent group-hover:border-outline-variant flex items-center justify-center p-2 overflow-hidden relative shadow-sm transition-all bg-cover bg-center" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAb1e-HXLWLEhmH7sE4oxfRvwyJXM93cS8vOOFGPxsbqKaTJRpQH6mhBqYng5L1-fcRQfDc49yv4mhAhuvPZkHWiEjRqzF7HB74-L4Tf8Se0mvzLobaEQCSEYxBRwX2KwZz5K-fxFVo5SPg3FnRY3UJwkv95T8QRcV1do1idT11tiGXo2900XOav5RBLMRyKCEDlLgC-8moiDqMP74ryIWAfKiCils6hRZ55uoHumqq2I2xq2ggXh2j')">
+<p class="text-center text-[10px] sm:text-xs text-white font-bold leading-tight drop-shadow-md z-10 relative">El esplendor de un Rey,<br/>vestido en majestad</p>
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+</div>
+<!-- Slide 2 -->
+<div class="group relative flex flex-col cursor-pointer">
+<span class="absolute -top-2 -left-2 text-[10px] font-mono-label text-on-surface-variant bg-surface-container-highest px-1 rounded-sm z-10 opacity-0 group-hover:opacity-100 transition-opacity">S2</span>
+<div class="aspect-video bg-black rounded border-2 border-transparent group-hover:border-outline-variant flex items-center justify-center p-2 overflow-hidden relative shadow-sm transition-all bg-cover bg-center" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCl2vVGoKehIb0LLglIWabUzlidAtz-FIKdsvPVQiv5Jy0O0Q42DS9l4F94C54RW3pMFrXAkg-K5VxsRf6yMqIVy6adsyoV9cV8BWsvwnhVrUATXV7YZLTo8siVSG5xq8imc8XNvJ59ldJKYRs5j4YJ4EsYna6LmMt2_9Kp-BWA3RxKIUeK44Fuc6Ze64hXRLExfcW0G5dOBmR3WuiQnxv0dxEQ-dPswfu_CAb55J0RYcJXTrry4sVC')">
+<p class="text-center text-[10px] sm:text-xs text-white font-bold leading-tight drop-shadow-md z-10 relative">La tierra alegre está,<br/>la tierra alegre está</p>
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+</div>
+<!-- Slide 3 (LIVE) -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="absolute -top-2.5 right-2 bg-error text-on-error font-label-caps text-[9px] px-1.5 py-0.5 rounded shadow-sm z-20 uppercase animate-pulse">VIVO</div>
+<span class="absolute -top-2 -left-2 text-[10px] font-mono-label text-on-surface-variant bg-surface-container-highest px-1 rounded-sm z-10">S3</span>
+<div class="aspect-video bg-black rounded border-[3px] border-error flex items-center justify-center p-2 overflow-hidden relative shadow-md bg-cover bg-center ring-2 ring-error/30" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOlf14cIdZaswp-O0feU_BNM5Hjecd1Zsw-C-7_XsTPjpeSXpvB7MfA5xn3kVhxB7cP656Hv_fAjkIwZNGsq4NAaLdpmxEZCqqyJBTjDCF8bO_AaXPCwsK1RGt0svT4aO1v_4m_WD6FFbWV1tz7PeCHmVPqfpNxleLXLq1KKuwzD1BogbG8MOmZTvIma1xFq-Cv4AXoTil_2asPnPrTjLKOUDUQi-_UjXeY7V1bnqR_ArSpWTjHRhF')">
+<p class="text-center text-[10px] sm:text-xs text-white font-bold leading-tight drop-shadow-md z-10 relative">Cubierto está de luz,<br/>venció la oscuridad</p>
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+</div>
+<!-- Slide 4 (Selected) -->
+<div class="group relative flex flex-col cursor-pointer">
+<span class="absolute -top-2 -left-2 text-[10px] font-mono-label text-on-surface-variant bg-surface-container-highest px-1 rounded-sm z-10">S4</span>
+<div class="aspect-video bg-black rounded border-2 border-primary flex items-center justify-center p-2 overflow-hidden relative shadow-sm bg-cover bg-center" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4lbK0WeBhANfXJsWFI6ZwEy1hH9dlUhKXcEUwxbJ8GAGB9xj3YT73sarDHOwWs7vLN9SwRxCarXzLxi5rHWjs1VH3zxEdJy6izihQU1KkBpfmFetFsxYXJXnTWQVcAOfncY3ydj8wCSfu5waqK7wF8Acj_Us40jD-iOZRFO4usjb2jP1-hLROG9K-1buAEhlQPMq5IblbkLEGmnBGc6K9n4CRTfGtC6o-8JswM7Jq83Cqm0CRQamt')">
+<p class="text-center text-[10px] sm:text-xs text-white font-bold leading-tight drop-shadow-md z-10 relative">Y tiembla a su voz,<br/>tiembla a su voz</p>
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+</div>
+<!-- Slide 5 -->
+<div class="group relative flex flex-col cursor-pointer">
+<span class="absolute -top-2 -left-2 text-[10px] font-mono-label text-on-surface-variant bg-surface-container-highest px-1 rounded-sm z-10 opacity-0 group-hover:opacity-100 transition-opacity">S5</span>
+<div class="aspect-video bg-black rounded border-2 border-transparent group-hover:border-outline-variant flex items-center justify-center p-2 overflow-hidden relative shadow-sm transition-all bg-cover bg-center" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCK21mOaoURIdSJg-745FpESFzDuohsc0EdjztMeSfP_cc_dCm2_K3jhFePYpJE75BIK7H2rOYJpJo6LK_71R8mNnYoeFvOZz8zjt0uLaJSyJt9CywAb4qF8qkzrvBH3B4tKgr8fllNscK1iB4zV6paNmbzoRhHgJbG9XSLFPOmrneD-sU0C4IlQ7nLc2MVlyqHUrW5cOIWRPLHyZL3U4tDYcamTYj1CZvwfFJIV-7cad0rF5cbUatC')">
+<p class="text-center text-[10px] sm:text-xs text-white font-bold leading-tight drop-shadow-md z-10 relative">Cuán grande es Dios,<br/>cántale</p>
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Sidebar: Preview & Macros -->
+<aside class="w-72 bg-surface-container-low flex flex-col flex-shrink-0" style="border-left: 1px solid theme('colors.outline-variant');">
+<!-- Preview section -->
+<div class="p-3 border-b flex flex-col gap-2" style="border-color: theme('colors.outline-variant');">
+<div class="flex items-center justify-between">
+<span class="text-label-caps font-label-caps uppercase text-on-surface-variant">Vista Previa</span>
+<button class="text-[10px] text-primary hover:bg-primary/10 px-1.5 py-0.5 rounded transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">desktop_windows</span>
+                        Monitor Esc.
+                    </button>
+</div>
+<!-- Large Live Preview -->
+<div class="aspect-video bg-black rounded border border-outline shadow-sm relative overflow-hidden bg-cover bg-center" data-alt="A dark abstract background featuring subtle wispy cosmic smoke and faint star-like particles scattered sparsely on a deep void, dramatic high contrast lighting, cinematic atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQRs8socoJ9HG4LGBa_qc7AmKo1r74GnKk1W64lJlF11NVwQUX5mb2iRt_qXA8Nwh2UJa4vnwScX4PRz8aoV52XA2ZOUK4ZLiEFtJi96fX0ebwcNuMgJ9TTzBgbJH0lZ0NoTBj9Jgvo0s9pG17fG-sXOIM8BsHky9JZ4wJUbrslKegeQgcjl7858QsZMsSqYBSL_Tktz0kLHXVkh9lVOc_xqZ2jQOfczh_FD-uUcp92Y3jkDISJfYN')">
+<div class="absolute inset-0 bg-black/40"></div>
+<div class="absolute inset-0 flex items-center justify-center p-3">
+<p class="text-center text-sm sm:text-base text-white font-bold leading-tight drop-shadow-lg z-10 relative">Cubierto está de luz,<br/>venció la oscuridad</p>
+</div>
+<div class="absolute bottom-1 right-1 flex gap-1">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+</div>
+</div>
+</div>
+<!-- Clocks & Timers -->
+<div class="p-3 border-b flex flex-col gap-3" style="border-color: theme('colors.outline-variant');">
+<span class="text-label-caps font-label-caps uppercase text-on-surface-variant">Relojes y Temporizadores</span>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container p-2 rounded flex flex-col items-center justify-center">
+<span class="text-[9px] uppercase text-on-surface-variant mb-1">Sistema</span>
+<span class="font-mono-label text-headline-sm text-on-surface">10:30:15</span>
+</div>
+<div class="bg-surface-container p-2 rounded flex flex-col items-center justify-center">
+<span class="text-[9px] uppercase text-on-surface-variant mb-1">Faltan</span>
+<span class="font-mono-label text-headline-sm text-tertiary-fixed">05:00</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-surface-container-highest hover:bg-primary/20 hover:text-primary text-on-surface text-label-caps py-1.5 rounded transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">play_arrow</span> Iniciar
+                    </button>
+<button class="flex-1 bg-surface-container-highest hover:bg-surface-variant text-on-surface text-label-caps py-1.5 rounded transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">stop</span> Detener
+                    </button>
+<button class="flex-1 bg-surface-container-highest hover:bg-surface-variant text-on-surface text-label-caps py-1.5 rounded transition-colors flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">refresh</span> Reini.
+                    </button>
+</div>
+</div>
+<!-- Macros -->
+<div class="p-3 flex-1 flex flex-col gap-3 overflow-y-auto">
+<span class="text-label-caps font-label-caps uppercase text-on-surface-variant">Macros</span>
+<div class="grid grid-cols-3 gap-2">
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed"></span>
+                        Intro
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                        Verso
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                        Coro
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+                        Puente
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                        Fondo Negro
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-highest text-[10px] font-bold text-on-surface py-2 rounded shadow-sm border border-transparent hover:border-outline-variant transition-all flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-outline">add</span>
+                        Añadir
+                    </button>
+</div>
+</div>
+</aside>
+</div>
+<!-- Bottom Panel: Media Bin -->
+<div class="h-48 bg-surface-container-low flex flex-col flex-shrink-0" style="border-top: 1px solid theme('colors.outline-variant');">
+<!-- Media Tabs -->
+<div class="flex items-center px-2 bg-surface-container-lowest" style="border-bottom: 1px solid theme('colors.outline-variant');">
+<button class="px-3 py-1.5 text-body-sm font-bold text-primary border-b-2 border-primary">Fondos</button>
+<button class="px-3 py-1.5 text-body-sm text-on-surface-variant hover:text-on-surface transition-colors">Primer Plano</button>
+<button class="px-3 py-1.5 text-body-sm text-on-surface-variant hover:text-on-surface transition-colors">Audio</button>
+<button class="px-3 py-1.5 text-body-sm text-on-surface-variant hover:text-on-surface transition-colors">Cámaras</button>
+<div class="flex-1"></div>
+<div class="flex gap-2 p-1">
+<button class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[16px]">search</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-highest text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Media Horizontal Scroll -->
+<div class="flex-1 flex overflow-x-auto p-3 gap-3 items-start custom-scrollbar">
+<!-- Active Video Background -->
+<div class="flex flex-col gap-1 shrink-0 w-32 group cursor-pointer">
+<div class="aspect-video bg-surface-container rounded relative overflow-hidden border-2 border-primary shadow-sm bg-cover bg-center" data-alt="Looping abstract motion graphic with slow moving geometric waves in deep blues and teals, subtle glowing edges, modern minimalist style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAw9bfTPOKeO9q2RhPP9a0smhVIo5Y7CszQitdxXYPS0tZ3BPOCQ9gDh0Hr1anoK0GLQA1bOCWikdOD47FoGqG2gW8iDNUmFE7ULs5Nj5oYcQBYXAM9C1F2YbF3X_QGSaRVn4dBnhGMGMsgj-uSTFuGzueMyTvi6GzQ2mO26EyJMVnOuohxo1pyLGp7pGMK6J-gc2_rIU579YHY3EE5dQ6FdCGl-Q3iMCeccFDnql7chj_gKGk1iUBj')">
+<div class="absolute bottom-1 left-1 bg-black/60 rounded px-1 backdrop-blur-sm flex items-center">
+<span class="material-symbols-outlined text-[10px] text-white">movie</span>
+</div>
+<div class="absolute inset-0 ring-1 ring-inset ring-white/10 rounded"></div>
+</div>
+<span class="text-[10px] text-on-surface truncate px-1">Olas Azules Loop</span>
+</div>
+<!-- Inactive Images/Videos -->
+<div class="flex flex-col gap-1 shrink-0 w-32 group cursor-pointer">
+<div class="aspect-video bg-surface-container rounded relative overflow-hidden border-2 border-transparent group-hover:border-outline-variant transition-colors bg-cover bg-center" data-alt="Serene mountain landscape at dusk, dark silhouette of peaks against a twilight sky with faint stars, cool purple and blue color palette." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjcpUUssKeMME6wn0Wn4_Mp2PT_bbC2EPhwQ6Mz1cBfWRqDRI8kmYr4NGjxK-_isTL58txAYSuCxHNjuQ-KXLmOgvWPn1koG-HHDPEzBfj6D3idcKcdcUkXT9tjvkDuT5mLq_LAkcjbsKtTVhHNcdCl4Ii-l6RW4R51BQl3uS4KKfz977hs9uTgt0SKYMS2vSzCRVUHckUJmNt9XSz6XqdIjnPHxB0pBLf34x46coO9LSGv9MsFoEg')">
+<div class="absolute bottom-1 left-1 bg-black/60 rounded px-1 backdrop-blur-sm flex items-center">
+<span class="material-symbols-outlined text-[10px] text-white">image</span>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant truncate px-1">Montañas Noche</span>
+</div>
+<div class="flex flex-col gap-1 shrink-0 w-32 group cursor-pointer">
+<div class="aspect-video bg-surface-container rounded relative overflow-hidden border-2 border-transparent group-hover:border-outline-variant transition-colors bg-cover bg-center" data-alt="Abstract slow moving light leaks and bokeh particles over a dark crimson and charcoal background, warm cinematic aesthetic, subtle motion." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6BTisYpCjuhM3qkOFGMWOT_u67uys3XBQ_8SsalcTzFvm7FtcE8evXko4TxpcMwj0JH2uI-pkouwTDVWJ3HVgZmPW_JY2BPE_fjKou0_PXEGKiMfeM5HRnrro51NsY73ZfWyFMhrzk1Jd-wgIVWaizy_yEXGGvsBsz5VAnSLqFfYIowma8mMeBZqkvJtVwQiW5cKsKwgKJYpNZPd8zd8wBQ9x8ZMYAqHa9PumYWuKxFltIt-NvtRN')">
+<div class="absolute bottom-1 left-1 bg-black/60 rounded px-1 backdrop-blur-sm flex items-center">
+<span class="material-symbols-outlined text-[10px] text-white">movie</span>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant truncate px-1">Luces Rojas Loop</span>
+</div>
+<div class="flex flex-col gap-1 shrink-0 w-32 group cursor-pointer">
+<div class="aspect-video bg-surface-container rounded relative overflow-hidden border-2 border-transparent group-hover:border-outline-variant transition-colors bg-cover bg-center" data-alt="Minimalist dark grey concrete wall texture, high resolution, subtle vignette, perfect for projecting high contrast white text over." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDq9U6_zWbyMxquZtuxAfwXdbAvbRP3Us0obBwCs-eLC0nZRh5jcxkTYGDnA0BJ_XXag9FAV-hk797fjIfrhF0vSeibOTzR34CVnZCvXupHDjHdWnjQrnRuGAcwqd0Sks0_bUGoh915gBrYQOm75d4TSzadXOmxgtomNaQeugBhTjlA-qlyQa6xCq3R0hAgWJ1qIZF2vI8gKllWoDd1260qTQwZ54DfkCCQrfL2KaLHZ0d36qYNxXAO')">
+<div class="absolute bottom-1 left-1 bg-black/60 rounded px-1 backdrop-blur-sm flex items-center">
+<span class="material-symbols-outlined text-[10px] text-white">image</span>
+</div>
+</div>
+<span class="text-[10px] text-on-surface-variant truncate px-1">Textura Concreto</span>
+</div>
+<!-- Add Button -->
+<button class="shrink-0 w-32 aspect-video bg-surface-container-highest hover:bg-surface-variant rounded border border-dashed border-outline-variant flex flex-col items-center justify-center gap-1 transition-colors text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span class="text-[10px] font-bold">Añadir Medios</span>
+</button>
+</div>
+</div>
+</div>
+<style>
+    /* Scoped minimalist scrollbar for inner panels to match the sleek dark theme */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: theme('colors.outline-variant');
+        border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: theme('colors.outline');
+    }
+</style></main><aside class="w-72 bg-surface-container-low border-l border-outline-variant"><div class="p-3 border-b border-outline-variant"><span class="text-label-caps font-label-caps uppercase text-on-surface-variant">Inspector</span></div><div class="p-4 text-on-surface-variant text-sm">Seleccione un elemento para editar sus propiedades.</div></aside></div><footer class="h-48 bg-surface-container-lowest border-t border-outline-variant"><div class="flex items-center justify-between px-3 py-1 border-b border-outline-variant bg-surface-container-low"><span class="text-label-caps font-label-caps uppercase text-on-surface-variant">Contenedor de Medios</span><div class="flex gap-2"><span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer">add</span><span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer">filter_list</span></div></div><div class="p-container-padding flex gap-thumbnail-grid-gap overflow-x-auto h-full items-start"></div></footer></body></html>

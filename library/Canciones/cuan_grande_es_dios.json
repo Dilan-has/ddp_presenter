@@ -1,0 +1,99 @@
+{
+  "id": "cuan_grande_es_dios",
+  "filePath": "Canciones/cuan_grande_es_dios.json",
+  "title": "Cuán Grande Es Dios",
+  "author": "Chris Tomlin",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "s1",
+      "label": "S1",
+      "text": "El esplendor de un Rey,\nvestido en majestad",
+      "imageUrl": null,
+      "imageStyle": {
+        "fit": "contain",
+        "position": "right",
+        "size": "73%"
+      },
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "s2",
+      "label": "S2",
+      "text": "La tierra alegre está,\nla tierra alegre está",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "s3",
+      "label": "S3",
+      "text": "Cubierto está de luz,\nvenció la oscuridad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "95px"
+      }
+    },
+    {
+      "id": "s4",
+      "label": "S4",
+      "text": "Y tiembla a su voz,\ntiembla a su voz",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "s5",
+      "label": "S5",
+      "text": "Cuán grande es Dios,\ncántale",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "s6",
+      "label": "S6",
+      "text": "Cuán grande es Dios,\ny todos lo verán",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "52px"
+      }
+    }
+  ]
+}

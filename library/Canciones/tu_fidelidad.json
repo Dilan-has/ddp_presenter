@@ -1,0 +1,17 @@
+{
+  "id": "tu_fidelidad",
+  "title": "Tu Fidelidad",
+  "author": "Marcos Witt",
+  "slides": [
+    {
+      "id": "s1",
+      "label": "S1",
+      "text": "Tu fidelidad es grande,\ntu fidelidad incomparable es"
+    },
+    {
+      "id": "s2",
+      "label": "S2",
+      "text": "Nadie como Tú, bendito Dios,\ngrande es Tu fidelidad"
+    }
+  ]
+}

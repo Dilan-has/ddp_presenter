@@ -1,0 +1,14 @@
+{
+  "id": "servicio_dominical",
+  "name": "Servicio Dominical",
+  "items": [
+    {
+      "type": "presentation",
+      "id": "cuan_grande_es_dios"
+    },
+    {
+      "type": "presentation",
+      "id": "tu_fidelidad"
+    }
+  ]
+}
