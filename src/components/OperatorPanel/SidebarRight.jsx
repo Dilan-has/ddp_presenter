@@ -9,12 +9,25 @@ const getAnimClass = (transition, isOut) => {
   return isOut ? "animate-fade-out" : "animate-fade-in";
 };
 
+const getFitClass = (fit) => {
+  if (fit === "fill") return "object-fill";
+  if (fit === "contain") return "object-contain";
+  return "object-cover";
+};
+
 export default function SidebarRight({
   // Preview
   activeBackground,
   prevBackground,
   activeBgTransition,
   activeBgDuration,
+  activeBgFit = "cover",
+  onUpdateBgFit,
+  onUpdateSlideBackgroundFit,
+  onRemoveSlideBackground,
+  openImagePickerTrigger = 0,
+  onAddImageSlide,
+  onDeleteMedia,
   activeSlideText,
   activeSlideStyle,
   activeSlideImage,
@@ -49,10 +62,18 @@ export default function SidebarRight({
   const [inspectorText, setInspectorText] = useState("");
   const [selectedOverlayId, setSelectedOverlayId] = useState(null);
   
-  // Image picker modal state: null, "slide", or "overlay"
+  // Image picker modal state: null, "slide", "overlay", or "new-image-slide"
   const [pickerTarget, setPickerTarget] = useState(null);
   const [pickerTab, setPickerTab] = useState("media"); // "media", "upload", "url"
   const [pickerUrlInput, setPickerUrlInput] = useState("");
+
+  // Respond to external trigger to open image picker for a new slide
+  useEffect(() => {
+    if (openImagePickerTrigger > 0) {
+      setPickerTarget("new-image-slide");
+      setPickerTab("media");
+    }
+  }, [openImagePickerTrigger]);
 
   // Dual-Deck preview monitor state (Zero-glitch crossfading)
   const [monDeck1, setMonDeck1] = useState(activeBackground ? { ...activeBackground, ready: true } : { url: "", type: "none", ready: true });
@@ -134,7 +155,9 @@ export default function SidebarRight({
 
   const handleSelectImageForTarget = (imageUrl) => {
     if (!imageUrl) return;
-    if (pickerTarget === "slide" && selectedSlide) {
+    if (pickerTarget === "new-image-slide") {
+      if (onAddImageSlide) onAddImageSlide(imageUrl);
+    } else if (pickerTarget === "slide" && selectedSlide) {
       onUpdateSlideImage(selectedSlide.id, imageUrl);
     } else if (pickerTarget === "overlay" && selectedSlide) {
       onAddImageOverlay(imageUrl);
@@ -208,7 +231,7 @@ export default function SidebarRight({
                       <img
                         src={deckData.url}
                         alt=""
-                        className="w-full h-full object-cover pointer-events-none"
+                        className={`w-full h-full ${getFitClass(activeBgFit || deckData.fit)} pointer-events-none`}
                       />
                     )}
                     {deckData.type === "video" && (
@@ -229,7 +252,7 @@ export default function SidebarRight({
                             monPendingCrossfadeRef.current();
                           }
                         }}
-                        className="w-full h-full object-cover pointer-events-none"
+                        className={`w-full h-full ${getFitClass(activeBgFit || deckData.fit)} pointer-events-none`}
                       />
                     )}
                   </div>
@@ -244,20 +267,29 @@ export default function SidebarRight({
               );
             })()}
 
-            {activeBackground.type !== "none" && (
-              <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-            )}
+
 
             {/* Slide Image Preview in Monitor */}
             {activeSlideImage && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center p-2 pointer-events-none">
+              <div className={`absolute inset-0 z-10 flex items-center justify-center pointer-events-none ${
+                activeSlideImageStyle?.fit === "fill" || activeSlideImageStyle?.position === "background" || activeSlideImageStyle?.position === "only-image" ? "p-0" : "p-2"
+              }`}>
                 <img
                   src={activeSlideImage}
                   style={{
-                    maxHeight: activeSlideImageStyle?.size || "70%",
-                    maxWidth: activeSlideImageStyle?.size || "70%"
+                    maxHeight: activeSlideImageStyle?.fit === "fill" || activeSlideImageStyle?.position === "background" ? "100%" : (activeSlideImageStyle?.size || "70%"),
+                    maxWidth: activeSlideImageStyle?.fit === "fill" || activeSlideImageStyle?.position === "background" ? "100%" : (activeSlideImageStyle?.size || "70%"),
+                    width: activeSlideImageStyle?.fit === "fill" || activeSlideImageStyle?.position === "background" ? "100%" : "auto",
+                    height: activeSlideImageStyle?.fit === "fill" || activeSlideImageStyle?.position === "background" ? "100%" : "auto",
+                    opacity: activeSlideImageStyle?.position === "background" ? 0.85 : 1
                   }}
-                  className={`object-${activeSlideImageStyle?.fit || "contain"} rounded drop-shadow-md`}
+                  className={`w-full h-full ${
+                    activeSlideImageStyle?.fit === "fill"
+                      ? "object-fill rounded-none"
+                      : activeSlideImageStyle?.fit === "cover"
+                      ? "object-cover rounded"
+                      : "object-contain rounded"
+                  } ${activeSlideImageStyle?.fit !== "fill" ? "drop-shadow-md" : ""}`}
                   alt=""
                 />
               </div>
@@ -265,17 +297,24 @@ export default function SidebarRight({
 
             {/* Slide text */}
             {activeSlideText && (
-              <p
-                style={{
-                  fontSize: activeSlideStyle.fontSize ? `${parseInt(activeSlideStyle.fontSize) * 0.22}px` : undefined,
-                  textAlign: activeSlideStyle.textAlign || "center"
-                }}
-                className={`w-full px-2 text-white font-bold font-display-live leading-tight drop-shadow-lg z-10 relative whitespace-pre-line ${
-                  !activeSlideStyle.fontSize ? "text-xs" : ""
-                }`}
-              >
-                {activeSlideText}
-              </p>
+              <div className={`w-full z-10 relative flex ${
+                activeSlideStyle.layout === "lower-third" || activeSlideStyle.verticalAlign === "flex-end" ? "mt-auto pb-1" :
+                activeSlideStyle.layout === "top-banner" || activeSlideStyle.verticalAlign === "flex-start" ? "mb-auto pt-1" : "my-auto"
+              }`}>
+                <p
+                  style={{
+                    fontSize: activeSlideStyle.fontSize ? `${parseInt(activeSlideStyle.fontSize) * 0.22}px` : undefined,
+                    textAlign: activeSlideStyle.textAlign || "center"
+                  }}
+                  className={`w-full text-white font-bold font-display-live leading-tight drop-shadow-lg whitespace-pre-line ${
+                    activeSlideStyle.layout === "lower-third" ? "bg-black/75 px-2 py-1 rounded text-[10px] border-t border-primary/50" :
+                    activeSlideStyle.layout === "top-banner" ? "bg-black/75 px-2 py-1 rounded text-[10px] border-b border-primary/50" :
+                    activeSlideStyle.fullWidth || activeSlideStyle.layout === "full" ? "px-1 text-[11px]" : "px-2 text-xs"
+                  }`}
+                >
+                  {activeSlideText}
+                </p>
+              </div>
             )}
 
             {/* Overlays */}
@@ -321,6 +360,60 @@ export default function SidebarRight({
                 }`}
               />
               <span>ON AIR</span>
+            </div>
+          </div>
+
+          {/* Background Fit / Ajuste de Fondo en Pantalla */}
+          <div className="flex flex-col gap-1.5 pt-2 border-t border-outline-variant/60">
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-label-caps uppercase text-on-surface-variant font-bold flex items-center gap-1">
+                <span className="material-symbols-outlined text-[13px] text-primary">aspect_ratio</span>
+                Ajuste de Fondo a Pantalla
+              </span>
+              <span className="text-[9px] font-mono text-primary font-bold">
+                {activeBgFit === "fill" ? "Exacto (100%)" : activeBgFit === "cover" ? "Rellenar" : "Proporcional"}
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-1 bg-surface-container-highest p-1 rounded">
+              <button
+                type="button"
+                onClick={() => onUpdateBgFit && onUpdateBgFit("fill")}
+                className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all ${
+                  activeBgFit === "fill"
+                    ? "bg-primary text-on-primary shadow-sm"
+                    : "text-on-surface hover:bg-surface-container-high"
+                }`}
+                title="Ajustar exacto a pantalla (100% de la pantalla sin cortes ni bordes negros)"
+              >
+                <span className="material-symbols-outlined text-[13px]">fullscreen</span>
+                <span>Exacto</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdateBgFit && onUpdateBgFit("cover")}
+                className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all ${
+                  activeBgFit === "cover"
+                    ? "bg-primary text-on-primary shadow-sm"
+                    : "text-on-surface hover:bg-surface-container-high"
+                }`}
+                title="Rellenar pantalla (recorta bordes proporcionalmente)"
+              >
+                <span className="material-symbols-outlined text-[13px]">crop</span>
+                <span>Rellenar</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdateBgFit && onUpdateBgFit("contain")}
+                className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all ${
+                  activeBgFit === "contain"
+                    ? "bg-primary text-on-primary shadow-sm"
+                    : "text-on-surface hover:bg-surface-container-high"
+                }`}
+                title="Ajustar proporcional (completo con barras)"
+              >
+                <span className="material-symbols-outlined text-[13px]">fit_screen</span>
+                <span>Completo</span>
+              </button>
             </div>
           </div>
         </div>
@@ -431,19 +524,45 @@ export default function SidebarRight({
           <div className="p-4 flex flex-col gap-4">
             {/* Core slide text */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-label-caps uppercase text-on-surface-variant font-bold">Texto Principal</label>
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-label-caps uppercase text-on-surface-variant font-bold">Texto Principal</label>
+                {(!selectedSlide.text || selectedSlide.imageStyle?.position === "only-image") && selectedSlide.imageUrl && (
+                  <span className="text-[9px] font-bold text-tertiary-fixed bg-tertiary-fixed/20 px-1.5 py-0.5 rounded flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[11px]">photo</span>
+                    Solo Imagen
+                  </span>
+                )}
+              </div>
               <textarea
                 className="w-full bg-surface-container-highest border border-outline-variant rounded p-2 text-body-sm text-on-surface outline-none focus:border-primary custom-scrollbar min-h-20 resize-y"
                 value={inspectorText}
+                placeholder={selectedSlide.imageUrl ? "(Diapositiva de solo imagen sin texto)" : "Escribe el texto de la diapositiva..."}
                 onChange={(e) => setInspectorText(e.target.value)}
               />
-              <button
-                onClick={() => onSaveSlideText(selectedSlide.id, inspectorText)}
-                className="bg-primary hover:bg-primary/80 text-on-primary text-[11px] font-bold py-1.5 rounded transition-all flex items-center justify-center gap-1"
-              >
-                <span className="material-symbols-outlined text-[14px]">save</span>
-                Guardar Texto
-              </button>
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => onSaveSlideText(selectedSlide.id, inspectorText)}
+                  className="flex-1 bg-primary hover:bg-primary/80 text-on-primary text-[11px] font-bold py-1.5 rounded transition-all flex items-center justify-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[14px]">save</span>
+                  Guardar Texto
+                </button>
+                {selectedSlide.imageUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInspectorText("");
+                      onSaveSlideText(selectedSlide.id, "");
+                      onUpdateSlideImageStyle(selectedSlide.id, { position: "only-image", fit: "fill", size: "100%" });
+                    }}
+                    className="bg-surface-container-highest hover:bg-surface-variant text-on-surface text-[10px] font-bold px-2 py-1.5 rounded transition-all border border-outline-variant flex items-center gap-1"
+                    title="Borrar el texto y dejar esta diapositiva como Solo Imagen a pantalla completa"
+                  >
+                    <span className="material-symbols-outlined text-[13px] text-tertiary-fixed">hide_source</span>
+                    <span>Dejar Solo Imagen</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Slide Image Section */}
@@ -486,22 +605,61 @@ export default function SidebarRight({
                     </select>
                   </div>
 
-                  {/* Image Fit & Scale Slider */}
-                  <div className="grid grid-cols-2 gap-2">
+                  {/* Image Fit & Scale */}
+                  <div className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-bold text-on-surface-variant">Ajuste</label>
-                      <select
-                        value={currentSlideImgFit}
-                        onChange={(e) => onUpdateSlideImageStyle(selectedSlide.id, { fit: e.target.value })}
-                        className="bg-surface-container-highest border border-outline-variant rounded p-1 text-xs text-on-surface outline-none focus:border-primary"
-                      >
-                        <option value="contain">Contener</option>
-                        <option value="cover">Cubrir</option>
-                      </select>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[9px] font-bold text-on-surface-variant">Ajuste de Imagen</label>
+                        <span className="text-[9px] font-mono text-primary font-bold">
+                          {currentSlideImgFit === "fill" ? "Exacto (100%)" : currentSlideImgFit === "cover" ? "Rellenar" : "Contener"}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1 bg-surface-container-highest p-1 rounded">
+                        <button
+                          type="button"
+                          onClick={() => onUpdateSlideImageStyle(selectedSlide.id, { fit: "fill", size: "100%" })}
+                          className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                            currentSlideImgFit === "fill"
+                              ? "bg-primary text-on-primary shadow-sm"
+                              : "text-on-surface hover:bg-surface-container-high"
+                          }`}
+                          title="Ajustar exacto a pantalla (ocupa 100% sin barras ni recorte)"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">fullscreen</span>
+                          <span>Exacto</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onUpdateSlideImageStyle(selectedSlide.id, { fit: "cover" })}
+                          className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                            currentSlideImgFit === "cover"
+                              ? "bg-primary text-on-primary shadow-sm"
+                              : "text-on-surface hover:bg-surface-container-high"
+                          }`}
+                          title="Rellenar pantalla (recorta bordes proporcionalmente)"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">crop</span>
+                          <span>Rellenar</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onUpdateSlideImageStyle(selectedSlide.id, { fit: "contain" })}
+                          className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                            currentSlideImgFit === "contain"
+                              ? "bg-primary text-on-primary shadow-sm"
+                              : "text-on-surface hover:bg-surface-container-high"
+                          }`}
+                          title="Contener proporcional (completo con barras)"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">fit_screen</span>
+                          <span>Contener</span>
+                        </button>
+                      </div>
                     </div>
+
                     <div className="flex flex-col gap-1">
                       <div className="flex justify-between text-[9px] font-bold text-on-surface-variant">
-                        <span>Escala</span>
+                        <span>Escala de Imagen</span>
                         <span>{currentSlideImgSize}%</span>
                       </div>
                       <input
@@ -513,6 +671,16 @@ export default function SidebarRight({
                         className="accent-primary h-1 bg-outline-variant rounded-lg appearance-none cursor-pointer mt-1"
                       />
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => onUpdateSlideImageStyle(selectedSlide.id, { fit: "fill", size: "100%", position: currentSlideImgPos === "background" ? "background" : "only-image" })}
+                      className="bg-surface-container-highest hover:bg-primary/20 hover:text-primary text-on-surface text-[10px] font-bold py-1.5 px-2 rounded border border-outline-variant flex items-center justify-center gap-1 transition-all"
+                      title="Hacer que la imagen ocupe exactamente toda la pantalla"
+                    >
+                      <span className="material-symbols-outlined text-[14px] text-primary">aspect_ratio</span>
+                      <span>Ocupar exactamente toda la pantalla</span>
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -526,6 +694,84 @@ export default function SidebarRight({
                   <span className="material-symbols-outlined text-[16px]">add_photo_alternate</span>
                   + Añadir Imagen a Diapositiva
                 </button>
+              )}
+
+              {/* Dedicated Slide Background Section if slide has background */}
+              {selectedSlide.backgroundUrl && (
+                <div className="bg-surface-container rounded p-2 border border-outline-variant flex flex-col gap-2 mt-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-bold text-on-surface-variant flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px] text-primary">wallpaper</span>
+                      Fondo Propio de Diapositiva
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveSlideBackground && onRemoveSlideBackground(selectedSlide.id)}
+                      className="text-error hover:text-red-400 p-0.5"
+                      title="Quitar Fondo Propio"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">delete</span>
+                    </button>
+                  </div>
+
+                  <div className="relative aspect-video bg-black rounded overflow-hidden">
+                    {selectedSlide.backgroundType === "video" ? (
+                      <video src={selectedSlide.backgroundUrl} className={`w-full h-full ${getFitClass(selectedSlide.backgroundFit || activeBgFit)}`} muted />
+                    ) : (
+                      <img src={selectedSlide.backgroundUrl} className={`w-full h-full ${getFitClass(selectedSlide.backgroundFit || activeBgFit)}`} alt="" />
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[9px] font-bold text-on-surface-variant">Ajuste de Fondo</label>
+                      <span className="text-[9px] font-mono text-primary font-bold">
+                        {(selectedSlide.backgroundFit || activeBgFit) === "fill" ? "Exacto (100%)" : (selectedSlide.backgroundFit || activeBgFit) === "cover" ? "Rellenar" : "Proporcional"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1 bg-surface-container-highest p-1 rounded">
+                      <button
+                        type="button"
+                        onClick={() => onUpdateSlideBackgroundFit && onUpdateSlideBackgroundFit(selectedSlide.id, "fill")}
+                        className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                          (selectedSlide.backgroundFit || activeBgFit) === "fill"
+                            ? "bg-primary text-on-primary shadow-sm"
+                            : "text-on-surface hover:bg-surface-container-high"
+                        }`}
+                        title="Ajustar exacto a pantalla"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">fullscreen</span>
+                        <span>Exacto</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onUpdateSlideBackgroundFit && onUpdateSlideBackgroundFit(selectedSlide.id, "cover")}
+                        className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                          (selectedSlide.backgroundFit || activeBgFit) === "cover"
+                            ? "bg-primary text-on-primary shadow-sm"
+                            : "text-on-surface hover:bg-surface-container-high"
+                        }`}
+                        title="Rellenar proporcional"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">crop</span>
+                        <span>Rellenar</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onUpdateSlideBackgroundFit && onUpdateSlideBackgroundFit(selectedSlide.id, "contain")}
+                        className={`py-1 px-1 rounded text-[10px] font-bold flex items-center justify-center gap-0.5 transition-all ${
+                          (selectedSlide.backgroundFit || activeBgFit) === "contain"
+                            ? "bg-primary text-on-primary shadow-sm"
+                            : "text-on-surface hover:bg-surface-container-high"
+                        }`}
+                        title="Ajustar completo con barras"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">fit_screen</span>
+                        <span>Completo</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -683,6 +929,63 @@ export default function SidebarRight({
               <span className="text-[10px] font-label-caps uppercase text-on-surface-variant font-bold">
                 Estilo y Posición del Texto
               </span>
+
+              {/* Screen Layout / Width Accommodation */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[9px] font-label-caps uppercase text-on-surface-variant font-bold">
+                  Acomodo / Ancho en Pantalla
+                </label>
+                <div className="grid grid-cols-2 gap-1 bg-surface-container-highest rounded p-1">
+                  <button
+                    onClick={() => onUpdateSlideStyle(selectedSlide.id, { layout: "full", fullWidth: true })}
+                    className={`py-1.5 px-2 rounded text-[11px] flex items-center justify-center gap-1 transition-colors ${
+                      selectedSlide.style?.layout === "full" || selectedSlide.style?.fullWidth
+                        ? "bg-primary text-on-primary font-bold shadow-sm"
+                        : "text-on-surface hover:bg-surface-container-high"
+                    }`}
+                    title="A lo largo de toda la pantalla (Ancho completo 98%)"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">width_full</span>
+                    <span>A lo largo (100%)</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateSlideStyle(selectedSlide.id, { layout: "standard", fullWidth: false })}
+                    className={`py-1.5 px-2 rounded text-[11px] flex items-center justify-center gap-1 transition-colors ${
+                      (!selectedSlide.style?.layout || selectedSlide.style?.layout === "standard") && !selectedSlide.style?.fullWidth
+                        ? "bg-primary text-on-primary font-bold shadow-sm"
+                        : "text-on-surface hover:bg-surface-container-high"
+                    }`}
+                    title="Estándar (Caja centrada 85%)"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">crop_16_9</span>
+                    <span>Estándar (85%)</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateSlideStyle(selectedSlide.id, { layout: "lower-third", fullWidth: true, verticalAlign: "flex-end" })}
+                    className={`py-1.5 px-2 rounded text-[11px] flex items-center justify-center gap-1 transition-colors ${
+                      selectedSlide.style?.layout === "lower-third"
+                        ? "bg-primary text-on-primary font-bold shadow-sm"
+                        : "text-on-surface hover:bg-surface-container-high"
+                    }`}
+                    title="Cintillo Inferior (A lo largo abajo)"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">call_to_action</span>
+                    <span>Cintillo Abajo</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateSlideStyle(selectedSlide.id, { layout: "top-banner", fullWidth: true, verticalAlign: "flex-start" })}
+                    className={`py-1.5 px-2 rounded text-[11px] flex items-center justify-center gap-1 transition-colors ${
+                      selectedSlide.style?.layout === "top-banner"
+                        ? "bg-primary text-on-primary font-bold shadow-sm"
+                        : "text-on-surface hover:bg-surface-container-high"
+                    }`}
+                    title="Cintillo Superior (A lo largo arriba)"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">vertical_align_top</span>
+                    <span>Cintillo Arriba</span>
+                  </button>
+                </div>
+              </div>
               
               {/* Horizontal Alignment */}
               <div className="flex flex-col gap-1">
@@ -810,7 +1113,11 @@ export default function SidebarRight({
             <div className="p-4 bg-surface-container-high border-b border-outline-variant flex items-center justify-between">
               <h3 className="font-bold text-on-surface flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">add_photo_alternate</span>
-                {pickerTarget === "slide" ? "Seleccionar Imagen para Diapositiva" : "Agregar Capa de Imagen"}
+                {pickerTarget === "new-image-slide"
+                  ? "Añadir Nueva Diapositiva de Solo Imagen"
+                  : pickerTarget === "slide"
+                  ? "Seleccionar Imagen para Diapositiva"
+                  : "Agregar Capa de Imagen"}
               </h3>
               <button
                 onClick={() => setPickerTarget(null)}
@@ -874,6 +1181,19 @@ export default function SidebarRight({
                                 Seleccionar
                               </span>
                             </div>
+                            {onDeleteMedia && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDeleteMedia(media);
+                                }}
+                                className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-all bg-red-600/90 hover:bg-red-600 text-white rounded p-1 shadow-md z-20 flex items-center justify-center hover:scale-110 active:scale-95"
+                                title={`Eliminar ${media.filename}`}
+                              >
+                                <span className="material-symbols-outlined text-[13px] leading-none">delete</span>
+                              </button>
+                            )}
                           </div>
                         ))}
                     </div>

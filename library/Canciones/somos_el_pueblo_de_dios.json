@@ -1,0 +1,234 @@
+{
+  "id": "somos_el_pueblo_de_dios",
+  "filePath": "Canciones/somos_el_pueblo_de_dios.json",
+  "title": "Somos el pueblo de dios",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791069391185-1",
+      "label": "S1",
+      "text": "Somos el pueblo de Dios\nSomos un pueblo especial\nLlamados para anunciar\nLas virtudes de aquel\nQue nos llamó a su luz",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-2",
+      "label": "S2",
+      "text": "Somos el pueblo de Dios\nSu sangre nos redimió\nY su espíritu dio\nPara darnos poder\nY ser testigos de él",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-3",
+      "label": "S3",
+      "text": "Y llevaremos su gloria\nA cada pueblo y nación\nTrayéndoles esperanza\nY nuevas de salvación",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-4",
+      "label": "S4",
+      "text": "Y su amor nos impulsa\nNo nos podemos callar\nAnunciaremos al mundo\nDe su amor y verdad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-5",
+      "label": "S5",
+      "text": "Somos el pueblo de Dios\nSomos un pueblo especial\nLlamados para anunciar\nLas virtudes de aquel\nQue nos llamó a su luz",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-6",
+      "label": "S6",
+      "text": "Somos el pueblo de Dios\nSu sangre nos redimió\nY su espíritu dio\nPara darnos poder\nY ser testigos de él",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-7",
+      "label": "S7",
+      "text": "Y llevaremos su gloria\nA cada pueblo y nación\nTrayéndoles esperanza\nY nuevas de salvación",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-8",
+      "label": "S8",
+      "text": "Y su amor nos impulsa\nNo nos podemos callar\nAnunciaremos al mundo\nDe su amor y verdad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-9",
+      "label": "S9",
+      "text": "Somos el pueblo de Dios\nSomos un pueblo especial\nLlamados para anunciar\nLas virtudes de aquel\nQue nos llamó a su luz",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-10",
+      "label": "S10",
+      "text": "Somos el pueblo de Dios\nSu sangre nos redimió, a ti, a mí\nY su espíritu dio\nPara darnos poder\nY ser testigos de él",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-11",
+      "label": "S11",
+      "text": "Y llevaremos su gloria\nA cada pueblo y nación\nTrayéndoles esperanza\nY nuevas de salvación",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-12",
+      "label": "S12",
+      "text": "Y su amor nos impulsa\nNo nos podemos callar\nAnunciaremos al mundo\nDe su amor y verdad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-13",
+      "label": "S13",
+      "text": "Y llevaremos su gloria\nA cada pueblo y nación\nTrayéndoles esperanza\nY nuevas de salvación",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-14",
+      "label": "S14",
+      "text": "Y su amor nos impulsa\nNo nos podemos callar\nAnunciaremos al mundo\nDe su amor y verdad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069422851-15",
+      "label": "S15",
+      "text": "De su amor y verdad",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

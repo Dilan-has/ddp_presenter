@@ -1,0 +1,279 @@
+{
+  "id": "tu_estas_aqui",
+  "filePath": "Canciones/tu_estas_aqui.json",
+  "title": "Tu estas aqui",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791068411860-1",
+      "label": "S1",
+      "text": "Aunque mis ojos\nNo Te pueden ver\nTe puedo sentir\nSé que estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-2",
+      "label": "S2",
+      "text": "Aunque mis manos\nNo pueden tocar\nTu rostro, Señor\nSé que estás aquí, oh",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-3",
+      "label": "S3",
+      "text": "Mi corazón\nPuede sentir Tu presencia\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-4",
+      "label": "S4",
+      "text": "Puedo sentir\nTu majestad\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-5",
+      "label": "S5",
+      "text": "Mi corazón\nPuede mirar Tu hermosura\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-6",
+      "label": "S6",
+      "text": "Puedo sentir\nTu gran amor\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-7",
+      "label": "S7",
+      "text": "Aunque mis ojos\nNo Te pueden ver\nTe puedo sentir\nSé que estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-8",
+      "label": "S8",
+      "text": "Aunque mis manos\nNo pueden tocar\nTu rostro, Señor\nSé que estás aquí, oh",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-9",
+      "label": "S9",
+      "text": "Mi corazón\nPuede sentir Tu presencia\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441386-10",
+      "label": "S10",
+      "text": "Puedo sentir\nTu majestad\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-11",
+      "label": "S11",
+      "text": "Mi corazón\nPuede mirar Tu hermosura\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-12",
+      "label": "S12",
+      "text": "Puedo sentir\nTu gran amor\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-13",
+      "label": "S13",
+      "text": "Mi corazón\nPuede sentir Tu presencia\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-14",
+      "label": "S14",
+      "text": "Puedo sentir\nTu majestad\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-15",
+      "label": "S15",
+      "text": "Mi corazón\nPuede mirar Tu hermosura\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-16",
+      "label": "S16",
+      "text": "Puedo sentir\nTu gran amor\nTú estás aquí\nTú estás aquí",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-17",
+      "label": "S17",
+      "text": "Tú estás aquí\n(Tú estás aquí)\nTú estás aquí\n(Tú estás aquí)",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068441387-18",
+      "label": "S18",
+      "text": "Tú estás aquí\n(Tú estás aquí)\nTú estás aquí\n(Tú estás aquí)",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

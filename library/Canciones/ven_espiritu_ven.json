@@ -1,0 +1,474 @@
+{
+  "id": "ven_espiritu_ven",
+  "filePath": "Canciones/ven_espiritu_ven.json",
+  "title": "Ven Espiritu Ven",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791670296347-1",
+      "label": "S1",
+      "text": "Ven\nEspíritu, ven",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-2",
+      "label": "S2",
+      "text": "Y lléname, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-3",
+      "label": "S3",
+      "text": "Con tu preciosa unción",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-4",
+      "label": "S4",
+      "text": "Ven\nEspíritu ven",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-5",
+      "label": "S5",
+      "text": "Y lléname, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-6",
+      "label": "S6",
+      "text": "Con tu preciosa unción",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-7",
+      "label": "S7",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-8",
+      "label": "S8",
+      "text": "Con tu poder",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-9",
+      "label": "S9",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-10",
+      "label": "S10",
+      "text": "Te quiero conocer",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-11",
+      "label": "S11",
+      "text": "Ven\nEspíritu ven",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-12",
+      "label": "S12",
+      "text": "Y lléname, Señor\nCon tu preciosa unción",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-13",
+      "label": "S13",
+      "text": "Ven\nEspíritu ven\nY lléname, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-14",
+      "label": "S14",
+      "text": "Con tu preciosa unción",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-15",
+      "label": "S15",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-16",
+      "label": "S16",
+      "text": "Con tu poder",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-17",
+      "label": "S17",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-18",
+      "label": "S18",
+      "text": "Te quiero conocer",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-19",
+      "label": "S19",
+      "text": "Purifícame y lávame, renuévame\nY restáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-20",
+      "label": "S20",
+      "text": "Con tu poder",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-21",
+      "label": "S21",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-22",
+      "label": "S22",
+      "text": "Te quiero conocer",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-23",
+      "label": "S23",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-24",
+      "label": "S24",
+      "text": "Con tu poder",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-25",
+      "label": "S25",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-26",
+      "label": "S26",
+      "text": "Te quiero conocer",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-27",
+      "label": "S27",
+      "text": "Purifícame\nSeñor\nCon tu poder",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-28",
+      "label": "S28",
+      "text": "Purifícame y lávame, renuévame\nRestáurame, Señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-29",
+      "label": "S29",
+      "text": "Te quiero conocer\nSeñor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-30",
+      "label": "S30",
+      "text": "Te quiero conocer\nSeñor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670505865-31",
+      "label": "S31",
+      "text": "Te quiero conocer",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

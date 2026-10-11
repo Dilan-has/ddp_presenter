@@ -1,0 +1,519 @@
+{
+  "id": "danzando",
+  "filePath": "Canciones/danzando.json",
+  "title": "Danzando",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791670696793-1",
+      "label": "S1",
+      "text": "Tu palabra dice\nQue aunque pase por el fuego, no me quemaré",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-2",
+      "label": "S2",
+      "text": "Y si paso por las aguas, no me ahogaré\nAunque haya oscuridad, con fe, caminaré\nPues Tú siempre vas conmigo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-3",
+      "label": "S3",
+      "text": "Tu palabra dice\nNo hay justo que Tú hayas desamparado",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-4",
+      "label": "S4",
+      "text": "Eres pan para el hambriento y necesitado\nEn mi mesa nunca, nunca ha faltado\nTú provees y no has fallado",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-5",
+      "label": "S5",
+      "text": "Yo no temeré\nTu promesa es fiel",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-6",
+      "label": "S6",
+      "text": "Tu yugo es fácil, ligera es Tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-7",
+      "label": "S7",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-8",
+      "label": "S8",
+      "text": "Danzando en cada temporada\nDanzando en cada temporada",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-9",
+      "label": "S9",
+      "text": "Tu palabra dice\nQue Tú oyes el clamor del quebrantado\nPor Tu llaga en la cruz, fuimos sanados",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-10",
+      "label": "S10",
+      "text": "Sobre toda enfermedad, Tú has ganado\nY mi vida está en Tu mano",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-11",
+      "label": "S11",
+      "text": "Tu palabra dice\nQue Tu muerte en la cruz fue por salvarnos\nQue perdonas y redimes del pecado",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-12",
+      "label": "S12",
+      "text": "Y en las nubes, seremos arrebatados\nCara a cara, Te veremos",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-13",
+      "label": "S13",
+      "text": "Yo no temeré\nTu promesa es fiel",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-14",
+      "label": "S14",
+      "text": "Tu yugo es fácil, ligera es Tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-15",
+      "label": "S15",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-16",
+      "label": "S16",
+      "text": "Danzando en cada temporada",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-17",
+      "label": "S17",
+      "text": "Sigo danzando, glorificando\nEn cada temporada, Tú sigues obrando",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-18",
+      "label": "S18",
+      "text": "Aunque ande en el valle de sombra\nDanzo, danzo, danzo, danzo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-19",
+      "label": "S19",
+      "text": "No se apaga, no se apagará este ritmo\nAunque venga contra mí, el enemigo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-20",
+      "label": "S20",
+      "text": "Tus promesas siempre van conmigo\nDanzo, danzo, danzo, danzo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-21",
+      "label": "S21",
+      "text": "No se apaga, no se apagará este ritmo\nAunque venga contra mí, el enemigo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-22",
+      "label": "S22",
+      "text": "Tus promesas siempre van conmigo\nDanzo, danzo, danzo, danzo",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-23",
+      "label": "S23",
+      "text": "En Ti, yo confío",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-24",
+      "label": "S24",
+      "text": "En Ti, yo confío",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-25",
+      "label": "S25",
+      "text": "Tu yugo es fácil, ligera es Tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-26",
+      "label": "S26",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-27",
+      "label": "S27",
+      "text": "Tu yugo es fácil, ligera es Tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-28",
+      "label": "S28",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-29",
+      "label": "S29",
+      "text": "Danzando en cada temporada",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-30",
+      "label": "S30",
+      "text": "Tu yugo es fácil, ligera es Tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-31",
+      "label": "S31",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-32",
+      "label": "S32",
+      "text": "Tu yugo es fácil, ligera es tu carga\nTe entrego mi vida y mi alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-33",
+      "label": "S33",
+      "text": "Mi escudo, mi fuerza, mi seguridad\nCon Cristo camino y estoy",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791670897067-34",
+      "label": "S34",
+      "text": "Danzando en cada temporada\nYeah, yeah",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

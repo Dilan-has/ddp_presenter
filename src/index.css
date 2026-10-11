@@ -93,37 +93,33 @@
 
 /* Animation utilities */
 .animate-fade-in {
-  opacity: 0;
-  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 1;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-fade-out {
-  opacity: 1;
-  animation: fadeOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-zoom-in {
-  opacity: 0;
-  transform: scale(0.95);
-  animation: zoomIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 1;
+  animation: zoomIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-zoom-out {
-  opacity: 1;
-  transform: scale(1);
-  animation: zoomOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  animation: zoomOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-slide-in {
-  opacity: 0;
-  transform: translateX(50px);
-  animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 1;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-slide-out {
-  opacity: 1;
-  transform: translateX(0);
-  animation: slideOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  opacity: 0;
+  animation: slideOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .live-output-text {
@@ -135,9 +131,10 @@
   font-smoothing: antialiased;
   font-feature-settings: "kern" 1, "liga" 1;
   text-shadow: 
-    0px 2px 4px rgba(0, 0, 0, 0.9),
-    0px 4px 16px rgba(0, 0, 0, 0.85),
-    0px 12px 36px rgba(0, 0, 0, 0.95);
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 4px 10px rgba(0, 0, 0, 0.9),
+    0 8px 24px rgba(0, 0, 0, 0.85),
+    0 16px 40px rgba(0, 0, 0, 0.9);
 }
 
 .font-display-live {

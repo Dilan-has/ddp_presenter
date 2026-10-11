@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { onProjectionMessage } from "../utils/networkSync";
 
 // Initialize BroadcastChannel for local multiscreen synchronization
 const projectionChannel = new BroadcastChannel("ddp_projection");
@@ -20,11 +21,26 @@ export default function StageOutput() {
   }, []);
 
   useEffect(() => {
-    const handleMessage = (e) => {
-      const { type, slideText, slideImage, nextSlideText, timerVal, timerLbl } = e.data;
+    const handleMessage = (dataOrEvent) => {
+      const data = dataOrEvent.data || dataOrEvent;
+      if (!data || !data.type) return;
+      const { type, slideText, slideImage, nextSlideText, timerVal, timerLbl, state, minutes, seconds, label } = data;
       switch (type) {
+        case "INIT_STATE":
+          if (state) {
+            setSlideText(state.slideText || "");
+            setSlideImage(state.slideImage || null);
+            if (state.timer) {
+              const mins = String(state.timer.minutes || 0).padStart(2, "0");
+              const secs = String(state.timer.seconds || 0).padStart(2, "0");
+              setTimerText(`${mins}:${secs}`);
+              if (state.timer.label) setTimerLabel(state.timer.label);
+            }
+          }
+          break;
+        case "TRIGGER_SLIDE":
         case "UPDATE_SLIDE":
-          setSlideText(slideText);
+          setSlideText(slideText || "");
           setSlideImage(slideImage || null);
           if (nextSlideText !== undefined) {
             setNextSlideText(nextSlideText);
@@ -34,8 +50,14 @@ export default function StageOutput() {
           setNextSlideText(nextSlideText);
           break;
         case "UPDATE_TIMER":
-          setTimerText(timerVal);
+          if (timerVal) setTimerText(timerVal);
+          else if (minutes !== undefined && seconds !== undefined) {
+            const m = String(minutes).padStart(2, "0");
+            const s = String(seconds).padStart(2, "0");
+            setTimerText(`${m}:${s}`);
+          }
           if (timerLbl) setTimerLabel(timerLbl);
+          else if (label) setTimerLabel(label);
           break;
         case "CLEAR_TEXT":
         case "CLEAR_ALL":
@@ -49,10 +71,12 @@ export default function StageOutput() {
     };
 
     projectionChannel.addEventListener("message", handleMessage);
+    const unsubscribeNetwork = onProjectionMessage(handleMessage);
     projectionChannel.postMessage({ type: "REQUEST_CURRENT_STATE" });
 
     return () => {
       projectionChannel.removeEventListener("message", handleMessage);
+      unsubscribeNetwork();
     };
   }, []);
 

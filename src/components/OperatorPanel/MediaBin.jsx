@@ -7,6 +7,8 @@ export default function MediaBin({
   triggerBackgroundLive,
   handleAddImageOverlay,
   handleSetSlideImage,
+  handleAddImageSlide,
+  handleDeleteMedia,
   onUploadSuccess
 }) {
   const fileInputRef = useRef(null);
@@ -91,6 +93,21 @@ export default function MediaBin({
                 ) : (
                   <video src={media.url} className="w-full h-full object-cover" muted />
                 )}
+                {/* Delete media button on hover */}
+                {handleDeleteMedia && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteMedia(media);
+                    }}
+                    className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-all bg-red-600/90 hover:bg-red-600 text-white rounded p-1 shadow-md z-20 flex items-center justify-center hover:scale-110 active:scale-95"
+                    title={`Eliminar ${media.filename}`}
+                  >
+                    <span className="material-symbols-outlined text-[12px] leading-none">delete</span>
+                  </button>
+                )}
+
                 <div className="absolute bottom-1 left-1 bg-black/60 rounded px-1 backdrop-blur-sm flex items-center">
                   <span className="material-symbols-outlined text-[10px] text-white">
                     {media.type === "image" ? "image" : "movie"}
@@ -98,28 +115,44 @@ export default function MediaBin({
                 </div>
 
                 {/* Media action overlay options */}
-                {selectedSlide && media.type === "image" && (
-                  <div className="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (handleSetSlideImage) handleSetSlideImage(selectedSlide.id, media.url);
-                      }}
-                      className="bg-primary text-on-primary text-[8px] px-1 py-0.5 rounded font-bold shadow"
-                      title="Establecer como Imagen Principal de la Diapositiva"
-                    >
-                      + Imagen
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddImageOverlay(media);
-                      }}
-                      className="bg-tertiary-fixed text-on-tertiary-fixed text-[8px] px-1 py-0.5 rounded font-bold shadow"
-                      title="Agregar como Capa Sobrepuesta"
-                    >
-                      + Capa
-                    </button>
+                {media.type === "image" && (
+                  <div className="absolute top-1 right-1 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    {handleAddImageSlide && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddImageSlide(media.url);
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white text-[8px] px-1 py-0.5 rounded font-bold shadow transition-colors"
+                        title="Crear nueva Diapositiva Solo Imagen"
+                      >
+                        + Diapo
+                      </button>
+                    )}
+                    {selectedSlide && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (handleSetSlideImage) handleSetSlideImage(selectedSlide.id, media.url);
+                          }}
+                          className="bg-primary text-on-primary text-[8px] px-1 py-0.5 rounded font-bold shadow"
+                          title="Establecer como Imagen Principal de la Diapositiva"
+                        >
+                          + Imagen
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddImageOverlay(media);
+                          }}
+                          className="bg-tertiary-fixed text-on-tertiary-fixed text-[8px] px-1 py-0.5 rounded font-bold shadow"
+                          title="Agregar como Capa Sobrepuesta"
+                        >
+                          + Capa
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded" />

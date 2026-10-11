@@ -2,11 +2,53 @@ import { useState, useEffect, useRef } from "react";
 import SidebarLeft from "./SidebarLeft";
 import SidebarRight from "./SidebarRight";
 import CenterPanel from "./CenterPanel";
+import BibleCenterPanel from "./BibleCenterPanel";
 import MediaBin from "./MediaBin";
 import ReflowEditor from "./ReflowEditor";
 
-// Initialize BroadcastChannel for local multiscreen synchronization
-const projectionChannel = new BroadcastChannel("ddp_projection");
+import { sendProjectionMessage, onProjectionMessage } from "../../utils/networkSync";
+
+// Unified network and local synchronization proxy
+const projectionChannel = {
+  postMessage: (msg) => {
+    sendProjectionMessage(msg);
+  },
+  addEventListener: () => {},
+  removeEventListener: () => {}
+};
+
+export const getBibleStyle = (
+  layout = "full",
+  textAlign = "center",
+  fontSize = "",
+  verticalAlign = "center"
+) => {
+  const style = {
+    textAlign: textAlign || "center"
+  };
+  if (fontSize) {
+    style.fontSize = fontSize;
+  }
+  if (layout === "lower-third") {
+    style.fullWidth = true;
+    style.layout = "lower-third";
+    style.verticalAlign = "flex-end";
+  } else if (layout === "top-banner") {
+    style.fullWidth = true;
+    style.layout = "top-banner";
+    style.verticalAlign = "flex-start";
+  } else if (layout === "full") {
+    style.fullWidth = true;
+    style.layout = "full";
+    style.verticalAlign = verticalAlign || "center";
+  } else {
+    // "standard"
+    style.fullWidth = false;
+    style.layout = "standard";
+    style.verticalAlign = verticalAlign || "center";
+  }
+  return style;
+};
 
 export default function OperatorPanel() {
   const [activeTab, setActiveTab] = useState("production-interface");
@@ -16,6 +58,9 @@ export default function OperatorPanel() {
   const [activeSlideDuration, setActiveSlideDuration] = useState(0.8);
   const [activeBgTransition, setActiveBgTransition] = useState("fade");
   const [activeBgDuration, setActiveBgDuration] = useState(1.0);
+  const [activeBgFit, setActiveBgFit] = useState(() => {
+    return localStorage.getItem("ddp_bg_fit") || "cover";
+  });
 
   // Data states
   const [songs, setSongs] = useState([]);
@@ -49,16 +94,29 @@ export default function OperatorPanel() {
   // Inspector selections
   const [selectedSlide, setSelectedSlide] = useState(null);
   const [selectedOverlayId, setSelectedOverlayId] = useState(null);
+  const [openImagePickerTrigger, setOpenImagePickerTrigger] = useState(0);
 
   // Bible state
   const [bibleQuery, setBibleQuery] = useState("");
   const [bibleResults, setBibleResults] = useState([]);
   const [bibleVersions, setBibleVersions] = useState([]);
-  const [selectedBibleVersion, setSelectedBibleVersion] = useState("es-rv09");
+  const [selectedBibleVersion, setSelectedBibleVersion] = useState("RVR1960");
   const [bibleBooks, setBibleBooks] = useState([]);
-  const [selectedBookId, setSelectedBookId] = useState("sanjuan");
+  const [selectedBookId, setSelectedBookId] = useState("");
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [isLoadingBible, setIsLoadingBible] = useState(false);
+  const [bibleLayout, setBibleLayout] = useState(() => {
+    return localStorage.getItem("ddp_bible_layout") || "full";
+  });
+  const [bibleTextAlign, setBibleTextAlign] = useState(() => {
+    return localStorage.getItem("ddp_bible_text_align") || "center";
+  });
+  const [bibleFontSize, setBibleFontSize] = useState(() => {
+    return localStorage.getItem("ddp_bible_font_size") || "";
+  });
+  const [bibleVerticalAlign, setBibleVerticalAlign] = useState(() => {
+    return localStorage.getItem("ddp_bible_vertical_align") || "center";
+  });
 
   // Timer states
   const [systemTime, setSystemTime] = useState("00:00:00");
@@ -102,17 +160,86 @@ export default function OperatorPanel() {
     return () => clearInterval(interval);
   }, [timerActive, timerMinutes, timerSeconds]);
 
-  // Sync Timer changes to BroadcastChannel
+  // Sync Timer changes to network and local projection
   useEffect(() => {
     const formatVal = `${String(timerMinutes).padStart(2, "0")}:${String(timerSeconds).padStart(2, "0")}`;
     projectionChannel.postMessage({
       type: "UPDATE_TIMER",
       timerVal: formatVal,
       timerLbl: timerLabel,
+      minutes: timerMinutes,
+      seconds: timerSeconds,
+      label: timerLabel,
+      active: timerActive
     });
-  }, [timerMinutes, timerSeconds, timerLabel]);
+  }, [timerMinutes, timerSeconds, timerLabel, timerActive]);
 
-  // Load backend files
+  // Synchronize incoming projection actions from other devices on the LAN
+  useEffect(() => {
+    const unsubscribe = onProjectionMessage((msg) => {
+      if (msg.type === "TRIGGER_SLIDE" || msg.type === "UPDATE_SLIDE") {
+        if (msg.slideId) setActiveSlideId(msg.slideId);
+        if (msg.slideText !== undefined) setActiveSlideText(msg.slideText);
+        if (msg.slideImage !== undefined) setActiveSlideImage(msg.slideImage);
+        if (msg.slideImageStyle) setActiveSlideImageStyle(msg.slideImageStyle);
+        if (msg.slideStyle) setActiveSlideStyle(msg.slideStyle);
+        if (msg.overlays) setActiveOverlays(msg.overlays);
+      } else if (msg.type === "UPDATE_BACKGROUND") {
+        if (msg.background) setActiveBackground(msg.background);
+        else if (msg.mediaUrl) {
+          setActiveBackground({ url: msg.mediaUrl, type: msg.mediaType || "image" });
+        }
+        if (msg.bgFit) setActiveBgFit(msg.bgFit);
+      } else if (msg.type === "CLEAR_ALL") {
+        setActiveSlideId(null);
+        setActiveSlideText("");
+        setActiveSlideImage(null);
+        setActiveOverlays([]);
+        setActiveBackground({ type: "none", url: null });
+      } else if (msg.type === "CLEAR_TEXT") {
+        setActiveSlideId(null);
+        setActiveSlideText("");
+        setActiveSlideImage(null);
+        setActiveOverlays([]);
+      } else if (msg.type === "CLEAR_BACKGROUND") {
+        setActiveBackground({ type: "none", url: null });
+      } else if (msg.type === "UPDATE_TIMER") {
+        if (msg.minutes !== undefined) setTimerMinutes(msg.minutes);
+        if (msg.seconds !== undefined) setTimerSeconds(msg.seconds);
+        if (msg.label !== undefined) setTimerLabel(msg.label);
+        if (msg.active !== undefined) setTimerActive(msg.active);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // State refs for event listeners to avoid re-triggering effects on state changes
+  const projectionStateRef = useRef({});
+  projectionStateRef.current = {
+    activeSlideText,
+    activeSlideImage,
+    activeSlideImageStyle,
+    activeOverlays,
+    activeSlideStyle,
+    activeSlideTransition,
+    activeSlideDuration,
+    activeBackground,
+    activeBgTransition,
+    activeBgDuration,
+    activeBgFit,
+    masterVolume
+  };
+
+  const navStateRef = useRef({});
+  navStateRef.current = {
+    activeTab,
+    bibleResults,
+    activeSlideId,
+    activeSong
+  };
+
+  // Load backend files once on mount
   useEffect(() => {
     fetchSongs();
     fetchSections();
@@ -120,84 +247,55 @@ export default function OperatorPanel() {
     fetchMediaFiles();
     fetchBibleVersions();
     fetchBibleBooks();
-    loadBibleChapter("es-rv09", "sanjuan", 1);
+  }, []);
 
-    // Listen to current state requests from newly opened outputs
+  const handleKeyDownRef = useRef(null);
+
+  // Listen to output messages and global keyboard shortcuts
+  useEffect(() => {
     const handleRequest = (e) => {
       if (e.data.type === "REQUEST_CURRENT_STATE") {
+        const s = projectionStateRef.current;
         projectionChannel.postMessage({
           type: "UPDATE_SLIDE",
-          slideText: activeSlideText,
-          slideImage: activeSlideImage,
-          slideImageStyle: activeSlideImageStyle,
-          overlays: activeOverlays,
-          slideStyle: activeSlideStyle,
-          transition: activeSlideTransition,
-          duration: activeSlideDuration
+          slideText: s.activeSlideText,
+          slideImage: s.activeSlideImage,
+          slideImageStyle: s.activeSlideImageStyle,
+          overlays: s.activeOverlays,
+          slideStyle: s.activeSlideStyle,
+          transition: s.activeSlideTransition,
+          duration: s.activeSlideDuration
         });
         projectionChannel.postMessage({
           type: "UPDATE_BACKGROUND",
-          mediaUrl: activeBackground.url,
-          mediaType: activeBackground.type,
-          transition: activeBgTransition,
-          duration: activeBgDuration
+          mediaUrl: s.activeBackground?.url,
+          mediaType: s.activeBackground?.type,
+          transition: s.activeBgTransition,
+          duration: s.activeBgDuration,
+          fit: s.activeBgFit || "cover"
         });
         projectionChannel.postMessage({
           type: "UPDATE_VOLUME",
-          volume: masterVolume / 100
+          volume: (s.masterVolume || 80) / 100
         });
       }
     };
 
     projectionChannel.addEventListener("message", handleRequest);
 
-    // Global keyboard hotkeys handler
-    const handleKeyDown = (e) => {
-      if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
-        return;
-      }
-
-      switch (e.key) {
-        case "F1":
-          e.preventDefault();
-          handleClearAll();
-          break;
-        case "F2":
-          e.preventDefault();
-          handleClearText();
-          break;
-        case "F3":
-          e.preventDefault();
-          handleClearBackground();
-          break;
-        case "F4":
-          e.preventDefault();
-          alert("Audio Silenciado");
-          break;
-        case "ArrowRight":
-          e.preventDefault();
-          navigateSlide(1);
-          break;
-        case "ArrowLeft":
-          e.preventDefault();
-          navigateSlide(-1);
-          break;
-        case "Escape":
-          e.preventDefault();
-          handleClearAll();
-          break;
-        default:
-          break;
+    const onKeyDown = (e) => {
+      if (handleKeyDownRef.current) {
+        handleKeyDownRef.current(e);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
       projectionChannel.removeEventListener("message", handleRequest);
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeSlideText, activeOverlays, activeBackground, activeSong, activeSlideId, activeSlideTransition, activeSlideDuration, activeBgTransition, activeBgDuration]);
+  }, []);
 
   // Fetch Library items
   const fetchSongs = async () => {
@@ -503,9 +601,9 @@ export default function OperatorPanel() {
     }
   };
 
-  const fetchBibleBooks = async () => {
+  const fetchBibleBooks = async (version = selectedBibleVersion) => {
     try {
-      const res = await fetch("/api/bible/books");
+      const res = await fetch(`/api/bible/books?version=${encodeURIComponent(version)}`);
       const data = await res.json();
       setBibleBooks(data || []);
     } catch (err) {
@@ -524,6 +622,204 @@ export default function OperatorPanel() {
     } finally {
       setIsLoadingBible(false);
     }
+  };
+
+  const handleBookChange = (newBookId) => {
+    setSelectedBookId(newBookId);
+    setSelectedChapter(1);
+    loadBibleChapter(selectedBibleVersion, newBookId, 1);
+  };
+
+  const handleChapterChange = (newChapterNum) => {
+    const num = parseInt(newChapterNum, 10);
+    setSelectedChapter(num);
+    loadBibleChapter(selectedBibleVersion, selectedBookId, num);
+  };
+
+  const handleBibleVersionChange = (newVersionId) => {
+    setSelectedBibleVersion(newVersionId);
+    fetchBibleBooks(newVersionId);
+    if (selectedBookId) {
+      loadBibleChapter(newVersionId, selectedBookId, selectedChapter);
+    }
+  };
+
+  const handleUpdateBibleLayout = (newLayout) => {
+    setBibleLayout(newLayout);
+    localStorage.setItem("ddp_bible_layout", newLayout);
+    const updatedStyle = getBibleStyle(newLayout, bibleTextAlign, bibleFontSize, bibleVerticalAlign);
+
+    if (selectedSlide && selectedSlide.id && selectedSlide.id.includes("bible-")) {
+      setSelectedSlide(prev => prev ? ({ ...prev, style: updatedStyle }) : prev);
+    }
+
+    if (activeSlideId && activeSlideId.includes("bible-")) {
+      setActiveSlideStyle(updatedStyle);
+      projectionChannel.postMessage({
+        type: "UPDATE_SLIDE",
+        slideText: activeSlideText,
+        slideImage: activeSlideImage,
+        slideImageStyle: activeSlideImageStyle,
+        overlays: activeOverlays,
+        slideStyle: updatedStyle,
+        transition: activeSlideTransition,
+        duration: activeSlideDuration
+      });
+    }
+  };
+
+  const handleUpdateBibleVerticalAlign = (newVAlign) => {
+    setBibleVerticalAlign(newVAlign);
+    localStorage.setItem("ddp_bible_vertical_align", newVAlign);
+
+    if (selectedSlide && selectedSlide.id && selectedSlide.id.includes("bible-")) {
+      setSelectedSlide(prev => prev ? ({ ...prev, style: { ...(prev.style || {}), verticalAlign: newVAlign } }) : prev);
+    }
+
+    if (activeSlideId && activeSlideId.includes("bible-")) {
+      const updatedStyle = { ...(activeSlideStyle || {}), verticalAlign: newVAlign };
+      setActiveSlideStyle(updatedStyle);
+      projectionChannel.postMessage({
+        type: "UPDATE_SLIDE",
+        slideText: activeSlideText,
+        slideImage: activeSlideImage,
+        slideImageStyle: activeSlideImageStyle,
+        overlays: activeOverlays,
+        slideStyle: updatedStyle,
+        transition: activeSlideTransition,
+        duration: activeSlideDuration
+      });
+    }
+  };
+
+  const handleUpdateBibleTextAlign = (newAlign) => {
+    setBibleTextAlign(newAlign);
+    localStorage.setItem("ddp_bible_text_align", newAlign);
+
+    if (selectedSlide && selectedSlide.id && selectedSlide.id.includes("bible-")) {
+      setSelectedSlide(prev => prev ? ({ ...prev, style: { ...(prev.style || {}), textAlign: newAlign } }) : prev);
+    }
+
+    if (activeSlideId && activeSlideId.includes("bible-")) {
+      const updatedStyle = { ...(activeSlideStyle || {}), textAlign: newAlign };
+      setActiveSlideStyle(updatedStyle);
+      projectionChannel.postMessage({
+        type: "UPDATE_SLIDE",
+        slideText: activeSlideText,
+        slideImage: activeSlideImage,
+        slideImageStyle: activeSlideImageStyle,
+        overlays: activeOverlays,
+        slideStyle: updatedStyle,
+        transition: activeSlideTransition,
+        duration: activeSlideDuration
+      });
+    }
+  };
+
+  const handleUpdateBibleFontSize = (newFontSize) => {
+    setBibleFontSize(newFontSize);
+    localStorage.setItem("ddp_bible_font_size", newFontSize);
+
+    if (selectedSlide && selectedSlide.id && selectedSlide.id.includes("bible-")) {
+      setSelectedSlide(prev => prev ? ({ ...prev, style: { ...(prev.style || {}), fontSize: newFontSize } }) : prev);
+    }
+
+    if (activeSlideId && activeSlideId.includes("bible-")) {
+      const updatedStyle = { ...(activeSlideStyle || {}), fontSize: newFontSize };
+      setActiveSlideStyle(updatedStyle);
+      projectionChannel.postMessage({
+        type: "UPDATE_SLIDE",
+        slideText: activeSlideText,
+        slideImage: activeSlideImage,
+        slideImageStyle: activeSlideImageStyle,
+        overlays: activeOverlays,
+        slideStyle: updatedStyle,
+        transition: activeSlideTransition,
+        duration: activeSlideDuration
+      });
+    }
+  };
+
+  const handleCreatePresentationFromBibleChapter = async () => {
+    if (!bibleResults || bibleResults.length === 0) return;
+    const firstVerse = bibleResults[0];
+    const bookName = firstVerse.book || selectedBookId;
+    const title = `${bookName} ${selectedChapter}`;
+    const author = selectedBibleVersion.toUpperCase();
+    const fileId = `biblia_${selectedBookId}_cap_${selectedChapter}`;
+    const filePath = `Canciones/${fileId}.json`;
+
+    const currentBibleStyle = getBibleStyle(bibleLayout, bibleTextAlign, bibleFontSize, bibleVerticalAlign);
+
+    const slides = bibleResults.map((v) => ({
+      id: `slide-bible-${v.book}-${v.chapter}-${v.verse}`,
+      label: `${v.chapter}:${v.verse}`,
+      text: `"${v.text}"\n\n${v.book} ${v.chapter}:${v.verse}`,
+      imageUrl: null,
+      imageStyle: null,
+      backgroundUrl: null,
+      backgroundType: null,
+      overlays: [],
+      style: { ...currentBibleStyle }
+    }));
+
+    const songData = {
+      id: fileId,
+      filePath,
+      title,
+      author,
+      section: "Canciones",
+      slides
+    };
+
+    try {
+      await fetch(`/api/library/save?filePath=${encodeURIComponent(filePath)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(songData)
+      });
+      await fetchSongs();
+      setActiveSong(songData);
+      setSelectedSlide(songData.slides[0] || null);
+      setActiveTab("production-interface");
+    } catch (err) {
+      console.error("Error creating presentation from Bible chapter:", err);
+    }
+  };
+
+  const handleLoadBibleChapterInProduction = () => {
+    if (!bibleResults || bibleResults.length === 0) return;
+    const firstVerse = bibleResults[0];
+    const bookName = firstVerse.book || selectedBookId;
+    const title = `${bookName} ${selectedChapter}`;
+    const author = selectedBibleVersion.toUpperCase();
+    const fileId = `biblia_${selectedBookId}_cap_${selectedChapter}`;
+
+    const currentBibleStyle = getBibleStyle(bibleLayout, bibleTextAlign, bibleFontSize, bibleVerticalAlign);
+
+    const slides = bibleResults.map((v) => ({
+      id: `slide-bible-${v.book}-${v.chapter}-${v.verse}`,
+      label: `${v.chapter}:${v.verse}`,
+      text: `"${v.text}"\n\n${v.book} ${v.chapter}:${v.verse}`,
+      imageUrl: null,
+      imageStyle: null,
+      backgroundUrl: null,
+      backgroundType: null,
+      overlays: [],
+      style: { ...currentBibleStyle }
+    }));
+
+    const songData = {
+      id: fileId,
+      title,
+      author,
+      section: "Biblia",
+      slides
+    };
+
+    setActiveSong(songData);
+    setSelectedSlide(songData.slides[0] || null);
+    setActiveTab("production-interface");
   };
 
   const handleBibleSearch = async (e, customQuery) => {
@@ -632,31 +928,157 @@ export default function OperatorPanel() {
     setSelectedSlide(newSlide);
   };
 
-  const updateSlideStyle = (slideId, newStyles) => {
+  const handleAddImageSlide = (imageUrl = "") => {
     if (!activeSong) return;
 
-    const updatedSlides = activeSong.slides.map(s => {
-      if (s.id === slideId) {
-        const currentStyle = s.style || {};
-        return { ...s, style: { ...currentStyle, ...newStyles } };
+    const newSlide = {
+      id: `slide-${Date.now()}`,
+      label: `IMG ${activeSong.slides.length + 1}`,
+      text: "",
+      imageUrl: imageUrl,
+      imageStyle: {
+        position: "only-image",
+        fit: "fill",
+        size: "100%"
+      },
+      overlays: [],
+      style: {
+        fontSize: "56px",
+        textAlign: "center",
+        verticalAlign: "center"
       }
-      return s;
-    });
+    };
 
-    const updatedSong = { ...activeSong, slides: updatedSlides };
+    const updatedSong = {
+      ...activeSong,
+      slides: [...activeSong.slides, newSlide]
+    };
+
+    setActiveSong(updatedSong);
+    saveSongToServer(updatedSong);
+    setSelectedSlide(newSlide);
+    return newSlide;
+  };
+
+  const handleOpenAddImageSlideModal = () => {
+    setOpenImagePickerTrigger((prev) => prev + 1);
+  };
+
+  const handleDeleteSlide = (slideId) => {
+    if (!activeSong || !activeSong.slides) return;
+    const targetSlide = activeSong.slides.find((s) => s.id === slideId);
+    const label = targetSlide?.label || "seleccionada";
+    if (!confirm(`¿Estás seguro de que deseas eliminar la diapositiva "${label}"?`)) return;
+
+    const remainingSlides = activeSong.slides.filter((s) => s.id !== slideId);
+    const updatedSong = {
+      ...activeSong,
+      slides: remainingSlides
+    };
+
     setActiveSong(updatedSong);
     saveSongToServer(updatedSong);
 
-    const updatedSelected = updatedSlides.find(s => s.id === slideId);
-    setSelectedSlide(updatedSelected);
+    // If the deleted slide was selected, select an adjacent slide or null
+    if (selectedSlide?.id === slideId) {
+      const deletedIndex = activeSong.slides.findIndex((s) => s.id === slideId);
+      const nextSlide = remainingSlides[deletedIndex] || remainingSlides[deletedIndex - 1] || null;
+      setSelectedSlide(nextSlide);
+    }
 
+    // If the deleted slide was live, clear projection
+    if (activeSlideId === slideId) {
+      setActiveSlideId(null);
+      setActiveSlideText("");
+      setActiveOverlays([]);
+      projectionChannel.postMessage({
+        type: "CLEAR_TEXT"
+      });
+    }
+  };
+
+  const handleDeleteMedia = async (media) => {
+    if (!media || !media.filename) return;
+    if (!confirm(`¿Estás seguro de que deseas eliminar el archivo "${media.filename}"?`)) return;
+
+    try {
+      const res = await fetch(`/api/media/${encodeURIComponent(media.filename)}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        fetchMediaFiles();
+        if (activeBackground?.url === media.url) {
+          setActiveBackground({ type: "none", url: null });
+          projectionChannel.postMessage({
+            type: "UPDATE_BACKGROUND",
+            background: { type: "none", url: null },
+            bgTransition: activeBgTransition,
+            duration: activeBgDuration,
+            bgFit: activeBgFit
+          });
+        }
+      } else {
+        alert(data.error || "No se pudo eliminar el archivo de medios");
+      }
+    } catch (err) {
+      console.error("Error deleting media:", err);
+      alert("Error al intentar eliminar el archivo de medios");
+    }
+  };
+
+  const updateSlideStyle = (slideId, newStyles) => {
+    // 1. If it belongs to activeSong, update the song array
+    const isSongSlide = Boolean(activeSong?.slides?.some(s => s.id === slideId));
+    let updatedStyle = newStyles;
+
+    if (isSongSlide) {
+      const updatedSlides = activeSong.slides.map(s => {
+        if (s.id === slideId) {
+          const currentStyle = s.style || {};
+          updatedStyle = { ...currentStyle, ...newStyles };
+          return { ...s, style: updatedStyle };
+        }
+        return s;
+      });
+
+      const updatedSong = { ...activeSong, slides: updatedSlides };
+      setActiveSong(updatedSong);
+      saveSongToServer(updatedSong);
+    }
+
+    // 2. Always update selectedSlide if matches
+    if (selectedSlide && selectedSlide.id === slideId) {
+      updatedStyle = { ...(selectedSlide.style || {}), ...newStyles };
+      setSelectedSlide(prev => ({ ...prev, style: updatedStyle }));
+    }
+
+    // 3. Keep Bible sync if it's a Bible slide
+    if (slideId && slideId.includes("bible-")) {
+      if (newStyles.textAlign) {
+        setBibleTextAlign(newStyles.textAlign);
+        localStorage.setItem("ddp_bible_text_align", newStyles.textAlign);
+      }
+      if (newStyles.layout) {
+        setBibleLayout(newStyles.layout);
+        localStorage.setItem("ddp_bible_layout", newStyles.layout);
+      }
+      if (newStyles.fontSize) {
+        setBibleFontSize(newStyles.fontSize);
+        localStorage.setItem("ddp_bible_font_size", newStyles.fontSize);
+      }
+    }
+
+    // 4. If currently live on projection, broadcast immediately!
     if (slideId === activeSlideId) {
-      setActiveSlideStyle(updatedSelected.style || {});
+      setActiveSlideStyle(updatedStyle);
       projectionChannel.postMessage({
         type: "UPDATE_SLIDE",
-        slideText: updatedSelected.text,
-        overlays: updatedSelected.overlays || [],
-        slideStyle: updatedSelected.style || {},
+        slideText: activeSlideText,
+        slideImage: activeSlideImage,
+        slideImageStyle: activeSlideImageStyle,
+        overlays: activeOverlays,
+        slideStyle: updatedStyle,
         transition: activeSlideTransition,
         duration: activeSlideDuration
       });
@@ -919,23 +1341,89 @@ export default function OperatorPanel() {
   };
 
   const navigateSlide = (direction) => {
-    if (!activeSong?.slides) return;
-    const currentIndex = activeSong.slides.findIndex(s => s.id === activeSlideId);
-    
+    // 1. If on Bible tab
+    if (activeTab === "bibles-tab" && bibleResults && bibleResults.length > 0) {
+      let currentIndex = -1;
+      if (activeSlideId) {
+        currentIndex = bibleResults.findIndex(
+          (v) => activeSlideId === `bible-${v.book}-${v.chapter}-${v.verse}`
+        );
+      }
+      if (currentIndex === -1 && selectedSlide?.id) {
+        currentIndex = bibleResults.findIndex(
+          (v) => selectedSlide.id === `bible-${v.book}-${v.chapter}-${v.verse}`
+        );
+      }
+
+      let nextIndex = 0;
+      if (currentIndex === -1) {
+        nextIndex = direction > 0 ? 0 : bibleResults.length - 1;
+      } else {
+        nextIndex = currentIndex + direction;
+      }
+
+      // Check if we advanced past the end of the chapter
+      if (nextIndex >= bibleResults.length && direction > 0) {
+        const currentBookObj = bibleBooks.find((b) => b.id === selectedBookId);
+        const maxChapters = currentBookObj?.chaptersCount || 50;
+        if (selectedChapter < maxChapters) {
+          handleChapterChange(selectedChapter + 1);
+        }
+        return;
+      }
+
+      // Check if we navigated before the start of the chapter
+      if (nextIndex < 0 && direction < 0) {
+        if (selectedChapter > 1) {
+          handleChapterChange(selectedChapter - 1);
+        }
+        return;
+      }
+
+      if (nextIndex >= 0 && nextIndex < bibleResults.length) {
+        const nextVerse = bibleResults[nextIndex];
+        const currentBibleStyle = getBibleStyle(bibleLayout, bibleTextAlign, bibleFontSize, bibleVerticalAlign);
+        const slideData = {
+          id: `bible-${nextVerse.book}-${nextVerse.chapter}-${nextVerse.verse}`,
+          label: `v.${nextVerse.verse}`,
+          text: `"${nextVerse.text}"\n\n${nextVerse.book} ${nextVerse.chapter}:${nextVerse.verse}`,
+          overlays: [],
+          style: currentBibleStyle
+        };
+        setSelectedSlide(slideData);
+        triggerBibleVerseLive(nextVerse, currentBibleStyle);
+      }
+      return;
+    }
+
+    // 2. If on Songs tab
+    if (!activeSong?.slides || activeSong.slides.length === 0) return;
+    let currentIndex = -1;
+    if (activeSlideId) {
+      currentIndex = activeSong.slides.findIndex((s) => s.id === activeSlideId);
+    }
+    if (currentIndex === -1 && selectedSlide?.id) {
+      currentIndex = activeSong.slides.findIndex((s) => s.id === selectedSlide.id);
+    }
+
     let nextIndex = 0;
     if (currentIndex === -1) {
-      nextIndex = 0;
+      nextIndex = direction > 0 ? 0 : activeSong.slides.length - 1;
     } else {
       nextIndex = currentIndex + direction;
     }
 
     if (nextIndex >= 0 && nextIndex < activeSong.slides.length) {
       const nextSlide = activeSong.slides[nextIndex];
+      setSelectedSlide(nextSlide);
       triggerSlideLive(nextSlide, nextIndex);
     }
   };
 
   const triggerSlideLive = (slide, index) => {
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
     setActiveSlideId(slide.id);
     setActiveSlideText(slide.text);
     setActiveSlideImage(slide.imageUrl || null);
@@ -960,11 +1448,24 @@ export default function OperatorPanel() {
       transition: activeSlideTransition,
       duration: activeSlideDuration
     });
+
+    if (slide.backgroundUrl) {
+      triggerBackgroundLive({
+        url: slide.backgroundUrl,
+        type: slide.backgroundType || "image",
+        fit: slide.backgroundFit || activeBgFit
+      });
+    }
   };
 
-  const triggerBibleVerseLive = (input) => {
+  const triggerBibleVerseLive = (input, customStyleOverride) => {
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
     let formattedText = "";
     let id = "";
+    let nextText = "---";
+
     if (Array.isArray(input)) {
       if (input.length === 0) return;
       const first = input[0];
@@ -979,26 +1480,105 @@ export default function OperatorPanel() {
     } else {
       formattedText = `"${input.text}"\n\n${input.book} ${input.chapter}:${input.verse}`;
       id = `bible-${input.book}-${input.chapter}-${input.verse}`;
+
+      // Calculate next verse preview for stage monitor
+      if (bibleResults && bibleResults.length > 0) {
+        const currIdx = bibleResults.findIndex(v => v.verse === input.verse);
+        if (currIdx !== -1 && currIdx < bibleResults.length - 1) {
+          const nextV = bibleResults[currIdx + 1];
+          nextText = `"${nextV.text}" (${nextV.book} ${nextV.chapter}:${nextV.verse})`;
+        }
+      }
     }
+
+    const appliedStyle = customStyleOverride || getBibleStyle(bibleLayout, bibleTextAlign, bibleFontSize, bibleVerticalAlign);
 
     setActiveSlideText(formattedText);
     setActiveSlideId(id);
     setActiveOverlays([]);
+    setActiveSlideImage(null);
+    setActiveSlideImageStyle({});
+    setActiveSlideStyle(appliedStyle);
+
+    // Also update selectedSlide for the Inspector in SidebarRight
+    setSelectedSlide({
+      id,
+      text: formattedText,
+      label: Array.isArray(input) ? `Bíblia: ${input[0].verse}-${input[input.length - 1].verse}` : `Bíblia: ${input.verse}`,
+      overlays: [],
+      style: appliedStyle
+    });
     
     projectionChannel.postMessage({
       type: "UPDATE_SLIDE",
       slideText: formattedText,
+      slideImage: null,
+      slideImageStyle: {},
       overlays: [],
-      nextSlideText: "",
+      slideStyle: appliedStyle,
+      nextSlideText: nextText,
       transition: activeSlideTransition,
       duration: activeSlideDuration
     });
   };
 
+  // Keep keydown handler up-to-date with current state and handlers
+  useEffect(() => {
+    handleKeyDownRef.current = (e) => {
+      const isEditing = ["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName);
+      if (isEditing) {
+        if (e.key === "Escape") {
+          document.activeElement.blur();
+        }
+        return;
+      }
+
+      switch (e.key) {
+        case "F1":
+          e.preventDefault();
+          handleClearAll();
+          break;
+        case "F2":
+          e.preventDefault();
+          handleClearText();
+          break;
+        case "F3":
+          e.preventDefault();
+          handleClearBackground();
+          break;
+        case "F4":
+          e.preventDefault();
+          alert("Audio Silenciado");
+          break;
+        case " ":
+        case "Spacebar":
+        case "ArrowRight":
+        case "ArrowDown":
+        case "PageDown":
+          e.preventDefault();
+          navigateSlide(1);
+          break;
+        case "ArrowLeft":
+        case "ArrowUp":
+        case "PageUp":
+          e.preventDefault();
+          navigateSlide(-1);
+          break;
+        case "Escape":
+          e.preventDefault();
+          handleClearAll();
+          break;
+        default:
+          break;
+      }
+    };
+  });
+
   const triggerBackgroundLive = (media) => {
     if (bgAnimTimeoutRef.current) clearTimeout(bgAnimTimeoutRef.current);
+    const mediaWithFit = { ...media, fit: media.fit || activeBgFit };
     setPrevBackground(activeBackground);
-    setActiveBackground(media);
+    setActiveBackground(mediaWithFit);
     bgAnimTimeoutRef.current = setTimeout(() => {
       setPrevBackground(null);
     }, activeBgDuration * 1000 + 100);
@@ -1008,8 +1588,59 @@ export default function OperatorPanel() {
       mediaUrl: media.url,
       mediaType: media.type,
       transition: activeBgTransition,
-      duration: activeBgDuration
+      duration: activeBgDuration,
+      fit: mediaWithFit.fit
     });
+  };
+
+  const handleUpdateBgFit = (newFit) => {
+    setActiveBgFit(newFit);
+    localStorage.setItem("ddp_bg_fit", newFit);
+    setActiveBackground((prev) => (prev ? { ...prev, fit: newFit } : prev));
+    projectionChannel.postMessage({
+      type: "UPDATE_BACKGROUND_FIT",
+      fit: newFit
+    });
+  };
+
+  const updateSlideBackgroundFit = (slideId, fit) => {
+    if (!activeSong) return;
+
+    const updatedSlides = activeSong.slides.map((s) => {
+      if (s.id === slideId) {
+        return { ...s, backgroundFit: fit };
+      }
+      return s;
+    });
+
+    const updatedSong = { ...activeSong, slides: updatedSlides };
+    setActiveSong(updatedSong);
+    saveSongToServer(updatedSong);
+
+    const updatedSelected = updatedSlides.find((s) => s.id === slideId);
+    setSelectedSlide(updatedSelected);
+
+    if (slideId === activeSlideId) {
+      handleUpdateBgFit(fit);
+    }
+  };
+
+  const removeSlideBackground = (slideId) => {
+    if (!activeSong) return;
+
+    const updatedSlides = activeSong.slides.map((s) => {
+      if (s.id === slideId) {
+        return { ...s, backgroundUrl: null, backgroundType: null, backgroundFit: null };
+      }
+      return s;
+    });
+
+    const updatedSong = { ...activeSong, slides: updatedSlides };
+    setActiveSong(updatedSong);
+    saveSongToServer(updatedSong);
+
+    const updatedSelected = updatedSlides.find((s) => s.id === slideId);
+    setSelectedSlide(updatedSelected);
   };
 
   const handleDragOver = (e) => {
@@ -1132,6 +1763,16 @@ export default function OperatorPanel() {
               <option value={1.2}>1.2s</option>
               <option value={1.5}>1.5s</option>
               <option value={2.0}>2.0s</option>
+            </select>
+            <select
+              value={activeBgFit}
+              onChange={(e) => handleUpdateBgFit(e.target.value)}
+              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-bold"
+              title="Ajuste de Fondo en Pantalla"
+            >
+              <option value="fill">↔️ Exacto (100% pantalla)</option>
+              <option value="cover">🔲 Rellenar (Recortar)</option>
+              <option value="contain">🖼️ Completo (Con barras)</option>
             </select>
           </div>
         </div>
@@ -1257,24 +1898,70 @@ export default function OperatorPanel() {
               onAddVerseToPresentation={addVerseToPresentation}
             />
 
-            <CenterPanel
-              activeSong={activeSong}
-              activeSlideId={activeSlideId}
-              selectedSlide={selectedSlide}
-              activeBackground={activeBackground}
-              openSongEditor={openSongEditor}
-              setSelectedSlide={setSelectedSlide}
-              triggerSlideLive={triggerSlideLive}
-              handleAddSlideQuick={handleAddSlideQuick}
-              handleDragOver={handleDragOver}
-              handleDropBackgroundOnSlide={handleDropBackgroundOnSlide}
-            />
+            {activeTab === "bibles-tab" ? (
+              <BibleCenterPanel
+                bibleResults={bibleResults}
+                bibleBooks={bibleBooks}
+                selectedBookId={selectedBookId}
+                selectedChapter={selectedChapter}
+                selectedBibleVersion={selectedBibleVersion}
+                bibleVersions={bibleVersions}
+                isLoadingBible={isLoadingBible}
+                activeSlideId={activeSlideId}
+                selectedSlide={selectedSlide}
+                activeBackground={activeBackground}
+                onSelectBook={handleBookChange}
+                onSelectChapter={handleChapterChange}
+                onSelectVersion={handleBibleVersionChange}
+                onTriggerBibleVerseLive={triggerBibleVerseLive}
+                setSelectedSlide={setSelectedSlide}
+                onAddVerseToPresentation={addVerseToPresentation}
+                handleDragOver={handleDragOver}
+                handleDropBackgroundOnSlide={handleDropBackgroundOnSlide}
+                onCreatePresentationFromChapter={handleCreatePresentationFromBibleChapter}
+                onLoadInProduction={handleLoadBibleChapterInProduction}
+                bibleLayout={bibleLayout}
+                onUpdateBibleLayout={handleUpdateBibleLayout}
+                bibleTextAlign={bibleTextAlign}
+                onUpdateBibleTextAlign={handleUpdateBibleTextAlign}
+                bibleFontSize={bibleFontSize}
+                onUpdateBibleFontSize={handleUpdateBibleFontSize}
+                bibleVerticalAlign={bibleVerticalAlign}
+                onUpdateBibleVerticalAlign={handleUpdateBibleVerticalAlign}
+                activeBgFit={activeBgFit}
+              />
+            ) : (
+              <CenterPanel
+                activeSong={activeSong}
+                activeSlideId={activeSlideId}
+                selectedSlide={selectedSlide}
+                activeBackground={activeBackground}
+                activeBgFit={activeBgFit}
+                openSongEditor={openSongEditor}
+                setSelectedSlide={setSelectedSlide}
+                triggerSlideLive={triggerSlideLive}
+                handleAddSlideQuick={handleAddSlideQuick}
+                handleAddImageSlide={handleAddImageSlide}
+                handleDeleteSlide={handleDeleteSlide}
+                onOpenAddImageSlideModal={handleOpenAddImageSlideModal}
+                handleDragOver={handleDragOver}
+                handleDropBackgroundOnSlide={handleDropBackgroundOnSlide}
+                onOpenBible={() => setActiveTab("bibles-tab")}
+              />
+            )}
 
             <SidebarRight
               activeBackground={activeBackground}
               prevBackground={prevBackground}
               activeBgTransition={activeBgTransition}
               activeBgDuration={activeBgDuration}
+              activeBgFit={activeBgFit}
+              onUpdateBgFit={handleUpdateBgFit}
+              onUpdateSlideBackgroundFit={updateSlideBackgroundFit}
+              onRemoveSlideBackground={removeSlideBackground}
+              openImagePickerTrigger={openImagePickerTrigger}
+              onAddImageSlide={handleAddImageSlide}
+              onDeleteMedia={handleDeleteMedia}
               activeSlideText={activeSlideText}
               activeSlideStyle={activeSlideStyle}
               activeSlideImage={activeSlideImage}
@@ -1312,6 +1999,8 @@ export default function OperatorPanel() {
             triggerBackgroundLive={triggerBackgroundLive}
             handleAddImageOverlay={handleAddImageOverlay}
             handleSetSlideImage={updateSlideImage}
+            handleAddImageSlide={handleAddImageSlide}
+            handleDeleteMedia={handleDeleteMedia}
             onUploadSuccess={fetchMediaFiles}
           />
         </>

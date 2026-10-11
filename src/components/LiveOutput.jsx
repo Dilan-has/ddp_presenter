@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { onProjectionMessage } from "../utils/networkSync";
 
 // Initialize BroadcastChannel for local multiscreen synchronization
 const projectionChannel = new BroadcastChannel("ddp_projection");
@@ -57,8 +58,10 @@ export default function LiveOutput() {
   const [isBgTransitioning, setIsBgTransitioning] = useState(false);
   const [bgTransition, setBgTransition] = useState("fade");
   const [bgDuration, setBgDuration] = useState(0.8);
+  const [bgFit, setBgFit] = useState("cover");
 
   const [audioVolume, setAudioVolume] = useState(0.8);
+  const [isBlackout, setIsBlackout] = useState(false);
   const [cursorHidden, setCursorHidden] = useState(false);
   const [showHud, setShowHud] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(Boolean(document.fullscreenElement));
@@ -76,6 +79,20 @@ export default function LiveOutput() {
   const deck2VideoRef = useRef(null);
   const hudTimerRef = useRef(null);
   const cursorTimerRef = useRef(null);
+
+  // Synchronization refs to avoid listener recreation and stale closures
+  const currentSlideRef = useRef(currentSlide);
+  currentSlideRef.current = currentSlide;
+  const activeDeckRef = useRef(activeDeck);
+  activeDeckRef.current = activeDeck;
+  const deck1Ref = useRef(deck1);
+  deck1Ref.current = deck1;
+  const deck2Ref = useRef(deck2);
+  deck2Ref.current = deck2;
+  const slideDurationRef = useRef(slideDuration);
+  slideDurationRef.current = slideDuration;
+  const bgDurationRef = useRef(bgDuration);
+  bgDurationRef.current = bgDuration;
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -141,26 +158,82 @@ export default function LiveOutput() {
   }, [audioVolume, deck1, deck2]);
 
   useEffect(() => {
-    const handleMessage = (e) => {
-      const { type, slideText, slideImage, slideImageStyle, overlays, slideStyle, mediaUrl, mediaType, transition, duration, volume } = e.data;
+    const handleMessage = (dataOrEvent) => {
+      const data = dataOrEvent.data || dataOrEvent;
+      if (!data || !data.type) return;
+      const { type, slideText, slideImage, slideImageStyle, overlays, slideStyle, mediaUrl, mediaType, transition, duration, volume, fit, background, enabled, state } = data;
       
       switch (type) {
+        case "INIT_STATE": {
+          if (!state) break;
+          if (state.slideText || state.slideImage || (state.overlays && state.overlays.length > 0)) {
+            setCurrentSlide({
+              text: state.slideText || "",
+              image: state.slideImage || null,
+              imageStyle: state.slideImageStyle || {},
+              overlays: state.overlays || [],
+              style: state.slideStyle || {}
+            });
+          }
+          if (state.background && state.background.url) {
+            const isVideo = state.background.type === "video";
+            setDeck1({
+              url: state.background.url,
+              type: state.background.type || "image",
+              fit: state.bgFit || "cover",
+              ready: !isVideo
+            });
+            setBgFit(state.bgFit || "cover");
+          }
+          setIsBlackout(Boolean(state.isBlackout));
+          break;
+        }
+
+        case "BLACKOUT": {
+          setIsBlackout(Boolean(enabled));
+          break;
+        }
+
+        case "UPDATE_BACKGROUND_FIT": {
+          const newFit = fit || "cover";
+          setBgFit(newFit);
+          setDeck1((d) => ({ ...d, fit: newFit }));
+          setDeck2((d) => ({ ...d, fit: newFit }));
+          break;
+        }
+
+        case "TRIGGER_SLIDE":
         case "UPDATE_SLIDE": {
-          if (slideTimeoutRef.current) clearTimeout(slideTimeoutRef.current);
+          if (slideTimeoutRef.current) {
+            clearTimeout(slideTimeoutRef.current);
+            slideTimeoutRef.current = null;
+          }
+          const isDocHidden = typeof document !== "undefined" && document.hidden;
           const dur = duration !== undefined ? duration : 0.4;
           setSlideTransition(transition || "fade");
           setSlideDuration(dur);
-          setPrevSlide(currentSlide);
-          setCurrentSlide({
+
+          const newSlide = {
             text: slideText,
             image: slideImage || null,
             imageStyle: slideImageStyle || {},
             overlays: overlays || [],
             style: slideStyle || {}
-          });
-          slideTimeoutRef.current = setTimeout(() => {
+          };
+
+          if (isDocHidden) {
+            // When tab or window is in background / not focused, DO NOT animate or wait for setTimeout!
+            // Instantly apply the new slide with no previous slide overlay to prevent frozen opacity-0
             setPrevSlide(null);
-          }, dur * 1000 + 50);
+            setCurrentSlide(newSlide);
+          } else {
+            setPrevSlide(currentSlideRef.current);
+            setCurrentSlide(newSlide);
+            slideTimeoutRef.current = setTimeout(() => {
+              setPrevSlide(null);
+              slideTimeoutRef.current = null;
+            }, dur * 1000 + 50);
+          }
           break;
         }
 
@@ -169,22 +242,57 @@ export default function LiveOutput() {
           if (videoWaitTimeoutRef.current) clearTimeout(videoWaitTimeoutRef.current);
           pendingCrossfadeRef.current = null;
 
+          const isDocHidden = typeof document !== "undefined" && document.hidden;
+          const curActiveDeck = activeDeckRef.current;
+          const curDeck1 = deck1Ref.current;
+          const curDeck2 = deck2Ref.current;
+          const chosenUrl = mediaUrl || (background ? background.url : null);
+          const chosenType = mediaType || (background ? background.type : "image");
           const dur = duration !== undefined ? duration : 0.6;
           const trans = transition || "fade";
+          const chosenFit = fit || bgFit || "cover";
           setBgTransition(trans);
           setBgDuration(dur);
+          if (fit) setBgFit(fit);
 
-          // If current media is already active, ignore
-          const currentMedia = activeDeck === 1 ? deck1 : deck2;
-          if (currentMedia.url === mediaUrl && currentMedia.type === mediaType) {
+          if (!chosenUrl) {
+            // Clearing background
+            const nextDeck = curActiveDeck === 1 ? 2 : 1;
+            if (nextDeck === 1) setDeck1({ url: "", type: "none", ready: true });
+            else setDeck2({ url: "", type: "none", ready: true });
+            setActiveDeck(nextDeck);
+            if (isDocHidden) {
+              setIsBgTransitioning(false);
+              setDeck1({ url: "", type: "none", ready: true });
+              setDeck2({ url: "", type: "none", ready: true });
+            } else {
+              setIsBgTransitioning(true);
+              bgCleanupTimerRef.current = setTimeout(() => {
+                setIsBgTransitioning(false);
+                setDeck1({ url: "", type: "none", ready: true });
+                setDeck2({ url: "", type: "none", ready: true });
+              }, dur * 1000 + 50);
+            }
             break;
           }
 
-          const nextDeck = activeDeck === 1 ? 2 : 1;
-          const isVideo = mediaType === "video";
+          // If current media is already active, check if fit changed
+          const currentMedia = curActiveDeck === 1 ? curDeck1 : curDeck2;
+          if (currentMedia.url === chosenUrl && currentMedia.type === chosenType) {
+            if (fit && currentMedia.fit !== fit) {
+              setBgFit(fit);
+              setDeck1((d) => ({ ...d, fit }));
+              setDeck2((d) => ({ ...d, fit }));
+            }
+            break;
+          }
+
+          const nextDeck = curActiveDeck === 1 ? 2 : 1;
+          const isVideo = chosenType === "video";
           const newMedia = {
-            url: mediaUrl,
-            type: mediaType,
+            url: chosenUrl,
+            type: chosenType,
+            fit: chosenFit,
             ready: !isVideo // images are immediately ready; videos pre-buffer
           };
 
@@ -205,10 +313,8 @@ export default function LiveOutput() {
             else setDeck2(d => ({ ...d, ready: true }));
 
             setActiveDeck(nextDeck);
-            setIsBgTransitioning(true);
 
-            if (bgCleanupTimerRef.current) clearTimeout(bgCleanupTimerRef.current);
-            bgCleanupTimerRef.current = setTimeout(() => {
+            if (isDocHidden) {
               setIsBgTransitioning(false);
               if (nextDeck === 1) {
                 if (deck2VideoRef.current) deck2VideoRef.current.pause();
@@ -217,7 +323,20 @@ export default function LiveOutput() {
                 if (deck1VideoRef.current) deck1VideoRef.current.pause();
                 setDeck1({ url: "", type: "none", ready: true });
               }
-            }, dur * 1000 + 80);
+            } else {
+              setIsBgTransitioning(true);
+              if (bgCleanupTimerRef.current) clearTimeout(bgCleanupTimerRef.current);
+              bgCleanupTimerRef.current = setTimeout(() => {
+                setIsBgTransitioning(false);
+                if (nextDeck === 1) {
+                  if (deck2VideoRef.current) deck2VideoRef.current.pause();
+                  setDeck2({ url: "", type: "none", ready: true });
+                } else {
+                  if (deck1VideoRef.current) deck1VideoRef.current.pause();
+                  setDeck1({ url: "", type: "none", ready: true });
+                }
+              }, dur * 1000 + 80);
+            }
           };
 
           if (isVideo) {
@@ -245,20 +364,33 @@ export default function LiveOutput() {
           break;
         }
 
-        case "CLEAR_TEXT":
-          if (slideTimeoutRef.current) clearTimeout(slideTimeoutRef.current);
-          setPrevSlide(currentSlide);
-          setCurrentSlide({ text: "", image: null, overlays: [], style: {} });
-          slideTimeoutRef.current = setTimeout(() => {
+        case "CLEAR_TEXT": {
+          if (slideTimeoutRef.current) {
+            clearTimeout(slideTimeoutRef.current);
+            slideTimeoutRef.current = null;
+          }
+          const isDocHidden = typeof document !== "undefined" && document.hidden;
+          const emptySlide = { text: "", image: null, overlays: [], style: {} };
+          if (isDocHidden) {
             setPrevSlide(null);
-          }, slideDuration * 1000 + 50);
+            setCurrentSlide(emptySlide);
+          } else {
+            setPrevSlide(currentSlideRef.current);
+            setCurrentSlide(emptySlide);
+            slideTimeoutRef.current = setTimeout(() => {
+              setPrevSlide(null);
+              slideTimeoutRef.current = null;
+            }, (slideDurationRef.current || 0.4) * 1000 + 50);
+          }
           break;
+        }
 
         case "CLEAR_BACKGROUND":
           if (bgCleanupTimerRef.current) clearTimeout(bgCleanupTimerRef.current);
           if (videoWaitTimeoutRef.current) clearTimeout(videoWaitTimeoutRef.current);
           {
-            const nextDeck = activeDeck === 1 ? 2 : 1;
+            const curActiveDeck = activeDeckRef.current;
+            const nextDeck = curActiveDeck === 1 ? 2 : 1;
             if (nextDeck === 1) setDeck1({ url: "", type: "none", ready: true });
             else setDeck2({ url: "", type: "none", ready: true });
             setActiveDeck(nextDeck);
@@ -267,7 +399,7 @@ export default function LiveOutput() {
               setIsBgTransitioning(false);
               setDeck1({ url: "", type: "none", ready: true });
               setDeck2({ url: "", type: "none", ready: true });
-            }, bgDuration * 1000 + 50);
+            }, (bgDurationRef.current || 0.6) * 1000 + 50);
           }
           break;
 
@@ -275,25 +407,11 @@ export default function LiveOutput() {
           if (slideTimeoutRef.current) clearTimeout(slideTimeoutRef.current);
           if (bgCleanupTimerRef.current) clearTimeout(bgCleanupTimerRef.current);
           if (videoWaitTimeoutRef.current) clearTimeout(videoWaitTimeoutRef.current);
-          setPrevSlide(currentSlide);
+          setPrevSlide(null);
           setCurrentSlide({ text: "", image: null, overlays: [], style: {} });
-          
-          {
-            const nextDeck = activeDeck === 1 ? 2 : 1;
-            if (nextDeck === 1) setDeck1({ url: "", type: "none", ready: true });
-            else setDeck2({ url: "", type: "none", ready: true });
-            setActiveDeck(nextDeck);
-            setIsBgTransitioning(true);
-            
-            slideTimeoutRef.current = setTimeout(() => {
-              setPrevSlide(null);
-            }, slideDuration * 1000 + 50);
-            bgCleanupTimerRef.current = setTimeout(() => {
-              setIsBgTransitioning(false);
-              setDeck1({ url: "", type: "none", ready: true });
-              setDeck2({ url: "", type: "none", ready: true });
-            }, bgDuration * 1000 + 50);
-          }
+          setDeck1({ url: "", type: "none", ready: true });
+          setDeck2({ url: "", type: "none", ready: true });
+          setIsBgTransitioning(false);
           break;
           
         default:
@@ -302,13 +420,39 @@ export default function LiveOutput() {
     };
 
     projectionChannel.addEventListener("message", handleMessage);
+    const unsubscribeNetwork = onProjectionMessage(handleMessage);
 
     return () => {
       projectionChannel.removeEventListener("message", handleMessage);
+      unsubscribeNetwork();
       if (bgCleanupTimerRef.current) clearTimeout(bgCleanupTimerRef.current);
       if (videoWaitTimeoutRef.current) clearTimeout(videoWaitTimeoutRef.current);
     };
-  }, [currentSlide, deck1, deck2, activeDeck, slideDuration, bgDuration]);
+  }, []); // Run once on mount!
+
+  // Window visibility & focus recovery: instantly clears any stalled animations or timeouts
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (!document.hidden) {
+        if (slideTimeoutRef.current) {
+          clearTimeout(slideTimeoutRef.current);
+          slideTimeoutRef.current = null;
+        }
+        if (bgCleanupTimerRef.current) {
+          clearTimeout(bgCleanupTimerRef.current);
+          bgCleanupTimerRef.current = null;
+        }
+        setPrevSlide(null);
+        setIsBgTransitioning(false);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("focus", onVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("focus", onVisibilityChange);
+    };
+  }, []);
 
   // Request initial state on mount exactly once
   useEffect(() => {
@@ -326,17 +470,23 @@ export default function LiveOutput() {
     const imgUrl = slide.image || slide.imageUrl;
     const imgStyle = slide.imageStyle || { fit: "contain", position: "center", size: "70%" };
 
+    const isFullWidth = Boolean(style.fullWidth || style.width === "full" || style.layout === "full");
+    const isLowerThird = style.layout === "lower-third" || style.position === "bottom";
+    const isTopBanner = style.layout === "top-banner" || style.position === "top";
+
     let alignClass = "items-center";
-    if (style.verticalAlign === "flex-start") alignClass = "items-start pt-16";
-    if (style.verticalAlign === "flex-end") alignClass = "items-end pb-16";
+    if (isLowerThird || style.verticalAlign === "flex-end") alignClass = "items-end pb-6 md:pb-12";
+    else if (isTopBanner || style.verticalAlign === "flex-start") alignClass = "items-start pt-6 md:pt-12";
 
     let textAlignClass = "text-center";
     if (style.textAlign === "left") textAlignClass = "text-left";
     if (style.textAlign === "right") textAlignClass = "text-right";
     if (style.textAlign === "justify") textAlignClass = "text-justify";
 
-    const customStyle = {};
-    if (style.fontSize) customStyle.fontSize = style.fontSize;
+    const alignStyle = {
+      textAlign: style.textAlign || "center",
+      ...(style.fontSize ? { fontSize: style.fontSize } : {})
+    };
 
     const layerKey = (isOut ? "out-" : "in-") + (slide.id || slide.text || imgUrl);
 
@@ -346,65 +496,129 @@ export default function LiveOutput() {
 
     const renderSlideContent = () => {
       if (!imgUrl) {
+        if (isLowerThird) {
+          return (
+            slide.text && (
+              <div className="w-full max-w-[98%] bg-black/80 backdrop-blur-md border-t-2 border-primary/60 shadow-2xl rounded-2xl p-5 md:p-8 flex flex-col justify-center">
+                <p 
+                  style={alignStyle}
+                  className={`w-full text-white font-bold font-display-live leading-snug tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-3xl md:text-5xl" : ""}`}
+                >
+                  {slide.text}
+                </p>
+              </div>
+            )
+          );
+        }
+
+        if (isTopBanner) {
+          return (
+            slide.text && (
+              <div className="w-full max-w-[98%] bg-black/80 backdrop-blur-md border-b-2 border-primary/60 shadow-2xl rounded-2xl p-5 md:p-8 flex flex-col justify-center">
+                <p 
+                  style={alignStyle}
+                  className={`w-full text-white font-bold font-display-live leading-snug tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-3xl md:text-5xl" : ""}`}
+                >
+                  {slide.text}
+                </p>
+              </div>
+            )
+          );
+        }
+
+        if (isFullWidth) {
+          return (
+            slide.text && (
+              <div className="w-full max-w-[97%] px-2 md:px-6 flex flex-col justify-center">
+                <p 
+                  style={alignStyle}
+                  className={`w-full text-white font-bold font-display-live leading-snug tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-5xl md:text-7xl" : ""}`}
+                >
+                  {slide.text}
+                </p>
+              </div>
+            )
+          );
+        }
+
         return (
           slide.text && (
-            <p 
-              style={customStyle}
-              className={`max-w-[85%] text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-5xl md:text-7xl" : ""}`}
-            >
-              {slide.text}
-            </p>
+            <div className="w-full max-w-[85%] flex flex-col justify-center">
+              <p 
+                style={alignStyle}
+                className={`w-full text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-5xl md:text-7xl" : ""}`}
+              >
+                {slide.text}
+              </p>
+            </div>
           )
         );
       }
 
       if (pos === "only-image") {
+        const isFill = fit === "fill";
         return (
-          <img
-            src={imgUrl}
-            alt=""
-            style={{ maxHeight: sizeVal, maxWidth: sizeVal }}
-            className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
-          />
+          <div className="w-full h-full flex items-center justify-center">
+            <img
+              src={imgUrl}
+              alt=""
+              style={{
+                width: isFill ? "100%" : "auto",
+                height: isFill ? "100%" : "auto",
+                maxHeight: isFill ? "100%" : sizeVal,
+                maxWidth: isFill ? "100%" : sizeVal
+              }}
+              className={`${isFill ? "w-full h-full object-fill rounded-none" : `object-${fit} drop-shadow-2xl rounded-lg`} pointer-events-none live-output-media`}
+            />
+          </div>
         );
       }
 
       if (pos === "background") {
+        const fitClass = fit === "fill" ? "object-fill" : fit === "contain" ? "object-contain" : "object-cover";
         return (
           <div className="relative w-full h-full flex items-center justify-center">
             <img
               src={imgUrl}
               alt=""
               style={{ opacity: 0.85 }}
-              className={`absolute inset-0 w-full h-full object-${fit} pointer-events-none live-output-media`}
+              className={`absolute inset-0 w-full h-full ${fitClass} pointer-events-none live-output-media`}
             />
             {slide.text && (
-              <p 
-                style={customStyle}
-                className={`max-w-[85%] text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line z-10 ${textAlignClass} ${!style.fontSize ? "text-5xl md:text-7xl" : ""}`}
-              >
-                {slide.text}
-              </p>
+              <div className={isFullWidth ? "w-full max-w-[97%] px-2 md:px-6 z-10" : "w-full max-w-[85%] z-10"}>
+                <p 
+                  style={alignStyle}
+                  className={`w-full text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-5xl md:text-7xl" : ""}`}
+                >
+                  {slide.text}
+                </p>
+              </div>
             )}
           </div>
         );
       }
 
       if (pos === "left") {
+        const isFill = fit === "fill";
         return (
           <div className="flex flex-row items-center justify-center gap-8 w-full max-w-[90%] h-full">
             <div className="flex-1 flex justify-center items-center h-full max-h-[80vh]">
               <img
                 src={imgUrl}
                 alt=""
-                style={{ maxHeight: sizeVal, maxWidth: "100%" }}
-                className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
+                style={{
+                  width: isFill ? "100%" : "auto",
+                  height: isFill ? "100%" : "auto",
+                  maxHeight: isFill ? "100%" : sizeVal,
+                  maxWidth: isFill ? "100%" : "100%"
+                }}
+                className={`w-full h-full object-${fit} ${isFill ? "rounded-none" : "rounded-lg drop-shadow-2xl"} pointer-events-none live-output-media`}
               />
             </div>
             {slide.text && (
               <div className="flex-1 flex justify-center items-center">
                 <p 
-                  style={customStyle}
+                  style={alignStyle}
                   className={`text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-4xl md:text-6xl" : ""}`}
                 >
                   {slide.text}
@@ -416,20 +630,26 @@ export default function LiveOutput() {
       }
 
       if (pos === "right") {
+        const isFill = fit === "fill";
         return (
           <div className="flex flex-row-reverse items-center justify-center gap-8 w-full max-w-[90%] h-full">
             <div className="flex-1 flex justify-center items-center h-full max-h-[80vh]">
               <img
                 src={imgUrl}
                 alt=""
-                style={{ maxHeight: sizeVal, maxWidth: "100%" }}
-                className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
+                style={{
+                  width: isFill ? "100%" : "auto",
+                  height: isFill ? "100%" : "auto",
+                  maxHeight: isFill ? "100%" : sizeVal,
+                  maxWidth: isFill ? "100%" : "100%"
+                }}
+                className={`w-full h-full object-${fit} ${isFill ? "rounded-none" : "rounded-lg drop-shadow-2xl"} pointer-events-none live-output-media`}
               />
             </div>
             {slide.text && (
               <div className="flex-1 flex justify-center items-center">
                 <p 
-                  style={customStyle}
+                  style={alignStyle}
                   className={`text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-4xl md:text-6xl" : ""}`}
                 >
                   {slide.text}
@@ -441,19 +661,25 @@ export default function LiveOutput() {
       }
 
       if (pos === "top") {
+        const isFill = fit === "fill";
         return (
           <div className="flex flex-col items-center justify-center gap-6 w-full max-w-[85%] h-full">
             <div className="flex justify-center items-center max-h-[50vh]">
               <img
                 src={imgUrl}
                 alt=""
-                style={{ maxHeight: sizeVal, maxWidth: "100%" }}
-                className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
+                style={{
+                  width: isFill ? "100%" : "auto",
+                  height: isFill ? "100%" : "auto",
+                  maxHeight: isFill ? "100%" : sizeVal,
+                  maxWidth: isFill ? "100%" : "100%"
+                }}
+                className={`w-full h-full object-${fit} ${isFill ? "rounded-none" : "rounded-lg drop-shadow-2xl"} pointer-events-none live-output-media`}
               />
             </div>
             {slide.text && (
               <p 
-                style={customStyle}
+                style={alignStyle}
                 className={`text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-4xl md:text-5xl" : ""}`}
               >
                 {slide.text}
@@ -464,19 +690,25 @@ export default function LiveOutput() {
       }
 
       if (pos === "bottom") {
+        const isFill = fit === "fill";
         return (
           <div className="flex flex-col-reverse items-center justify-center gap-6 w-full max-w-[85%] h-full">
             <div className="flex justify-center items-center max-h-[50vh]">
               <img
                 src={imgUrl}
                 alt=""
-                style={{ maxHeight: sizeVal, maxWidth: "100%" }}
-                className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
+                style={{
+                  width: isFill ? "100%" : "auto",
+                  height: isFill ? "100%" : "auto",
+                  maxHeight: isFill ? "100%" : sizeVal,
+                  maxWidth: isFill ? "100%" : "100%"
+                }}
+                className={`w-full h-full object-${fit} ${isFill ? "rounded-none" : "rounded-lg drop-shadow-2xl"} pointer-events-none live-output-media`}
               />
             </div>
             {slide.text && (
               <p 
-                style={customStyle}
+                style={alignStyle}
                 className={`text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-4xl md:text-5xl" : ""}`}
               >
                 {slide.text}
@@ -487,17 +719,23 @@ export default function LiveOutput() {
       }
 
       // Default: pos === "center"
+      const isFill = fit === "fill";
       return (
         <div className="flex flex-col items-center justify-center gap-4 w-full max-w-[85%] h-full">
           <img
             src={imgUrl}
             alt=""
-            style={{ maxHeight: sizeVal, maxWidth: "90%" }}
-            className={`object-${fit} drop-shadow-2xl rounded-lg pointer-events-none live-output-media`}
+            style={{
+              width: isFill ? "100%" : "auto",
+              height: isFill ? "100%" : "auto",
+              maxHeight: isFill ? "100%" : sizeVal,
+              maxWidth: isFill ? "100%" : "90%"
+            }}
+            className={`w-full h-full object-${fit} ${isFill ? "rounded-none" : "rounded-lg drop-shadow-2xl"} pointer-events-none live-output-media`}
           />
           {slide.text && (
             <p 
-              style={customStyle}
+              style={alignStyle}
               className={`text-white font-bold font-display-live leading-tight tracking-tight live-output-text whitespace-pre-line ${textAlignClass} ${!style.fontSize ? "text-4xl md:text-5xl" : ""}`}
             >
               {slide.text}
@@ -511,7 +749,7 @@ export default function LiveOutput() {
       <div 
         key={layerKey} 
         style={{ animationDuration: `${slideDuration}s` }}
-        className={`absolute inset-0 z-20 flex justify-center p-6 ${alignClass} ${getAnimClass(slideTransition, isOut)}`}
+        className={`absolute inset-0 z-20 flex justify-center ${isFullWidth || isLowerThird || isTopBanner ? "px-2 py-4 md:px-4 md:py-6" : "p-6"} ${alignClass} ${getAnimClass(slideTransition, isOut)}`}
       >
         {renderSlideContent()}
         {slide.overlays?.map(renderOverlay)}
@@ -539,6 +777,9 @@ export default function LiveOutput() {
       }
     }
 
+    const currentFit = bgFit || deckData.fit || "cover";
+    const fitClass = currentFit === "fill" ? "object-fill" : currentFit === "contain" ? "object-contain" : "object-cover";
+
     return (
       <div
         key={`deck-${deckNum}-${deckData.url}`}
@@ -549,7 +790,7 @@ export default function LiveOutput() {
           <img
             src={deckData.url}
             alt=""
-            className="w-full h-full object-cover pointer-events-none live-output-media"
+            className={`w-full h-full ${fitClass} pointer-events-none live-output-media`}
           />
         )}
         {deckData.type === "video" && (
@@ -578,7 +819,7 @@ export default function LiveOutput() {
                 pendingCrossfadeRef.current();
               }
             }}
-            className="w-full h-full object-cover pointer-events-none live-output-media"
+            className={`w-full h-full ${fitClass} pointer-events-none live-output-media`}
           />
         )}
       </div>
@@ -595,14 +836,7 @@ export default function LiveOutput() {
       {renderDeckLayer(1, deck1, deck1VideoRef)}
       {renderDeckLayer(2, deck2, deck2VideoRef)}
       
-      {/* Smart Dim Overlay: Only dims background when slide text is present to maintain 100% video color & contrast */}
-      {hasBg && (
-        <div 
-          className={`absolute inset-0 bg-black transition-opacity duration-500 z-10 pointer-events-none ${
-            hasText ? "opacity-35" : "opacity-0"
-          }`} 
-        />
-      )}
+
 
       {/* Slide Content Layer (Previous) */}
       {renderSlideLayer(prevSlide, true)}
@@ -648,6 +882,11 @@ export default function LiveOutput() {
           </button>
         </div>
       </div>
+
+      {/* Blackout Layer */}
+      {isBlackout && (
+        <div className="absolute inset-0 bg-black z-50 pointer-events-none transition-opacity duration-300" />
+      )}
     </div>
   );
 }

@@ -1,0 +1,40 @@
+{
+  "id": "logos",
+  "title": "logos",
+  "author": "Desconocido",
+  "slides": [
+    {
+      "id": "slide-1791672659708-1",
+      "label": "V1",
+      "text": "Escribe aquí la letra...",
+      "overlays": []
+    },
+    {
+      "id": "slide-1791672670127",
+      "label": "IMG 2",
+      "text": "",
+      "imageUrl": "/media/Logo IPUIC 2.png",
+      "imageStyle": {
+        "position": "only-image",
+        "fit": "cover",
+        "size": "82%"
+      },
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "flex-end",
+        "layout": "standard",
+        "fullWidth": false
+      }
+    },
+    {
+      "id": "slide-bible-1791676024979",
+      "label": "B22",
+      "text": "\"Pero sed hacedores de la palabra, y no tan solamente oidores, engañándoos a vosotros mismos.\"\n\nSantiago 1:22",
+      "overlays": []
+    }
+  ],
+  "filePath": "logos/logos.json",
+  "section": "logos"
+}

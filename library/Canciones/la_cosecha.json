@@ -1,0 +1,99 @@
+{
+  "id": "la_cosecha",
+  "filePath": "Canciones/la_cosecha.json",
+  "title": "La cosecha",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791068636313-1",
+      "label": "S1",
+      "text": "Alza tus ojos y mira\nla cosecha esta lista\nel tiempo a llegado\nla miel se esta madura.\nesfuerzate y se valiente\nlevantate y predica\na todas las naciones\nque Cristo les da vida",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068644921-2",
+      "label": "S2",
+      "text": "(coro)\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar.",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068644921-3",
+      "label": "S3",
+      "text": "Alza tus ojos y mira\nla cosecha esta lista\nel tiempo a llegado\nla miel se esta madura.\nesfuerzate y se valiente\nlevantate y predica\na todas las naciones\nque Cristo les da vida",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068644921-4",
+      "label": "S4",
+      "text": "(coro)\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar.",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068644921-5",
+      "label": "S5",
+      "text": "no, no ahy otro nombre dado a los hombres\nJesucristo es el señor",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068644921-6",
+      "label": "S6",
+      "text": "(coro)\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar\nY sera llena la tierra de su gloria se cubrira\ncomo las aves cubren la mar.",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

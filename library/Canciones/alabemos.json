@@ -1,0 +1,116 @@
+{
+  "id": "alabemos",
+  "filePath": "Canciones/alabemos.json",
+  "title": "Alabemos",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791068552363-1",
+      "label": "S1",
+      "text": "Alabamos con panderos\nAlabamos con salterio\nAlabamos todos juntos",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068571741-2",
+      "label": "S2",
+      "text": "Alabamos, Alabamos\nAlabamos con trompetas\nAlabamos con las flautas",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068571741-3",
+      "label": "S3",
+      "text": "Alabamos con las palmas\nAlabamos, Alabamos\nTodo lo que tenga vida",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068571741-4",
+      "label": "S4",
+      "text": "Todo lo que aun respira\nCon canciones de alegría\nAlabamos, Alabamos",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068571741-5",
+      "label": "S5",
+      "text": "Levantemos manos santas\nCelebremos con la danza\nQue se escuche la alabanza",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791069716307-6",
+      "label": "S6",
+      "text": "Te Alabamos Dios",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": "/media/Logo IPUIC 2.png",
+      "backgroundType": "image",
+      "overlays": [],
+      "style": {
+        "fontSize": "110px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791071979349",
+      "label": "IMG 7",
+      "text": "",
+      "imageUrl": "/media/montanas_noche.png",
+      "imageStyle": {
+        "position": "only-image",
+        "fit": "contain",
+        "size": "80%"
+      },
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

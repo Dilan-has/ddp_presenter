@@ -1,0 +1,174 @@
+{
+  "id": "si_tu_presencia_conmigo_no_va",
+  "filePath": "Canciones/si_tu_presencia_conmigo_no_va.json",
+  "title": "Si tu presencia conmigo no va",
+  "author": "Desconocido",
+  "section": "Canciones",
+  "slides": [
+    {
+      "id": "slide-1791068685080-1",
+      "label": "S1",
+      "text": "Quiero habitar en Tu intimidad\nDonde sé que Te voy a encontrar\nQuiero habitar en Tu intimidad\nDonde sé que Te voy a encontrar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-2",
+      "label": "S2",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-3",
+      "label": "S3",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-4",
+      "label": "S4",
+      "text": "Oh-oh, oh-oh, oh-oh, oh-oh\nOh-oh, oh-oh, oh-oh, oh-oh",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-5",
+      "label": "S5",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": "/media/logo blanco.png",
+      "imageStyle": {
+        "fit": "contain",
+        "position": "center",
+        "size": "70%"
+      },
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "71px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-6",
+      "label": "S6",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-7",
+      "label": "S7",
+      "text": "Y no me voy hasta que suceda\nHasta que Tu gloria inunde mi interior\nY no me voy hasta que suceda\nHasta que Tu gloria inunde mi interior",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-8",
+      "label": "S8",
+      "text": "(Y no me voy hasta que suceda)\n(Hasta que Tu gloria inunde mi interior)\nY no me voy hasta que suceda\nHasta que Tu gloria inunde mi interior",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-9",
+      "label": "S9",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791068691171-10",
+      "label": "S10",
+      "text": "Si Tu presencia conmigo no va\nYo no voy a ningún lugar\nNo quiero llegar, no voy a llegar",
+      "imageUrl": null,
+      "imageStyle": null,
+      "backgroundUrl": null,
+      "backgroundType": null,
+      "overlays": [],
+      "style": {
+        "fontSize": "90px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    },
+    {
+      "id": "slide-1791070330900",
+      "label": "S11",
+      "text": "Nueva diapositiva",
+      "overlays": [],
+      "style": {
+        "fontSize": "56px",
+        "textAlign": "center",
+        "verticalAlign": "center"
+      }
+    }
+  ]
+}

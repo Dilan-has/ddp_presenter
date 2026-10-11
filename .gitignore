@@ -21,4 +21,6 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+/media/*
+bible_data
+bible_data_temp
