@@ -35,6 +35,9 @@ export default function RemoteControl() {
   const [chapterVerses, setChapterVerses] = useState([]);
   const [bibleFilter, setBibleFilter] = useState("");
   const [loadingBible, setLoadingBible] = useState(false);
+  const [bibleFontSize, setBibleFontSize] = useState(() => {
+    return parseInt(localStorage.getItem("ddp_remote_bible_font_size") || "46", 10);
+  });
 
   const activeSlideRef = useRef(null);
 
@@ -274,6 +277,34 @@ export default function RemoteControl() {
     fetchBibleBooks(versionId);
   };
 
+  const handleUpdateBibleFontSize = (newSize) => {
+    const clamped = Math.max(20, Math.min(90, newSize));
+    setBibleFontSize(clamped);
+    localStorage.setItem("ddp_remote_bible_font_size", String(clamped));
+
+    // If currently displaying a Bible verse on screen, update live projection in real-time!
+    if (liveState.activeSlideId?.includes("bible-") || (liveState.slideText && !liveState.slideImage)) {
+      const payload = {
+        type: "UPDATE_SLIDE",
+        slideId: liveState.activeSlideId,
+        slideText: liveState.slideText,
+        slideImage: null,
+        slideImageStyle: {},
+        overlays: [],
+        slideStyle: {
+          fontSize: `${clamped}px`,
+          textAlign: "center",
+          verticalAlign: "center",
+          fontWeight: "bold",
+          lineHeight: 1.3
+        },
+        transition: "fade",
+        duration: 0.2
+      };
+      sendProjectionMessage(payload);
+    }
+  };
+
   // TRIGGER SLIDE
   const handleTriggerSlide = (slide, index) => {
     if (!slide) return;
@@ -373,7 +404,7 @@ export default function RemoteControl() {
       slideImageStyle: {},
       overlays: [],
       slideStyle: {
-        fontSize: "44px",
+        fontSize: `${bibleFontSize}px`,
         textAlign: "center",
         verticalAlign: "center",
         fontWeight: "bold",
@@ -836,6 +867,48 @@ export default function RemoteControl() {
                     title="Capítulo siguiente"
                   >
                     <span className="material-symbols-outlined text-base">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Font Size Adjuster Toolbar */}
+              <div className="bg-zinc-900/90 border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between gap-2 shadow-sm">
+                <div className="flex items-center gap-1.5 text-zinc-300 min-w-0">
+                  <span className="material-symbols-outlined text-base text-primary shrink-0">format_size</span>
+                  <span className="text-[11px] font-bold truncate">Tamaño:</span>
+                  <span className="text-xs font-mono font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded shrink-0">
+                    {bibleFontSize}px
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => handleUpdateBibleFontSize(bibleFontSize - 2)}
+                    disabled={bibleFontSize <= 20}
+                    className="h-8 w-8 bg-zinc-800 active:bg-zinc-700 disabled:opacity-30 disabled:pointer-events-none rounded-lg flex items-center justify-center text-white border border-zinc-700 active:scale-95 transition-transform"
+                    title="Reducir letra (-2px)"
+                  >
+                    <span className="material-symbols-outlined text-sm">remove</span>
+                  </button>
+
+                  <input
+                    type="range"
+                    min="20"
+                    max="90"
+                    step="2"
+                    value={bibleFontSize}
+                    onChange={(e) => handleUpdateBibleFontSize(parseInt(e.target.value, 10))}
+                    className="w-16 sm:w-24 accent-primary cursor-pointer h-1.5 bg-zinc-700 rounded-lg appearance-none"
+                    title="Ajustar tamaño de letra"
+                  />
+
+                  <button
+                    onClick={() => handleUpdateBibleFontSize(bibleFontSize + 2)}
+                    disabled={bibleFontSize >= 90}
+                    className="h-8 w-8 bg-zinc-800 active:bg-zinc-700 disabled:opacity-30 disabled:pointer-events-none rounded-lg flex items-center justify-center text-white border border-zinc-700 active:scale-95 transition-transform"
+                    title="Aumentar letra (+2px)"
+                  >
+                    <span className="material-symbols-outlined text-sm">add</span>
                   </button>
                 </div>
               </div>

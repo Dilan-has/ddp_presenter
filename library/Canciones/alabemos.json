@@ -92,7 +92,9 @@
       "style": {
         "fontSize": "110px",
         "textAlign": "center",
-        "verticalAlign": "center"
+        "verticalAlign": "flex-end",
+        "layout": "standard",
+        "fullWidth": false
       }
     },
     {
