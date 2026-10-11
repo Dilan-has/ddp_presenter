@@ -620,7 +620,7 @@ app.get("/api/bible/books", async (req, res) => {
   res.json(booksInVersion);
 });
 
-app.get("/api/bible/chapter", async (req, res) => {
+async function handleBibleChapter(req, res) {
   const { version = "RVR1960", book: bookParam = "sanjuan", chapter: chapterParam = "1" } = req.query;
   const versionInfo = await getBibleVersionData(version);
 
@@ -662,9 +662,14 @@ app.get("/api/bible/chapter", async (req, res) => {
     bookId: resolvedBook.id,
     usfm: resolvedBook.usfm,
     chapter: chapterNum,
-    results: verses
+    results: verses,
+    verses: verses
   });
-});
+}
+
+app.get("/api/bible/chapter", handleBibleChapter);
+app.get("/api/bible/text", handleBibleChapter);
+
 
 app.get("/api/bible/search", async (req, res) => {
   const { query, version = "RVR1960" } = req.query;

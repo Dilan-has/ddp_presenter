@@ -27,10 +27,13 @@ export default function RemoteControl() {
   const [loadingMedia, setLoadingMedia] = useState(false);
 
   // Bible
+  const [bibleVersions, setBibleVersions] = useState([]);
+  const [selectedBibleVersion, setSelectedBibleVersion] = useState("RVR1960");
   const [bibleBooks, setBibleBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState("génesis");
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [chapterVerses, setChapterVerses] = useState([]);
+  const [bibleFilter, setBibleFilter] = useState("");
   const [loadingBible, setLoadingBible] = useState(false);
 
   const activeSlideRef = useRef(null);
@@ -104,7 +107,8 @@ export default function RemoteControl() {
   useEffect(() => {
     fetchSongs();
     fetchMediaFiles();
-    fetchBibleBooks();
+    fetchBibleVersions();
+    fetchBibleBooks("RVR1960");
   }, []);
 
   // SONGS
@@ -194,28 +198,57 @@ export default function RemoteControl() {
   };
 
   // BIBLE
-  const fetchBibleBooks = async () => {
+  const fetchBibleVersions = async () => {
     try {
-      const res = await fetch("/api/bible/books");
+      const res = await fetch("/api/bible/versions");
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data)) setBibleBooks(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setBibleVersions(data);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading bible versions:", err);
+    }
+  };
+
+  const fetchBibleBooks = async (version = selectedBibleVersion) => {
+    try {
+      const res = await fetch(`/api/bible/books?version=${encodeURIComponent(version)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setBibleBooks(data);
+          if (data.length > 0) {
+            setSelectedBook((prev) => {
+              const exists = data.some((b) => b.id === prev);
+              return exists ? prev : data[0].id;
+            });
+          }
+        }
       }
     } catch (err) {
       console.error("Error loading bible books:", err);
     }
   };
 
-  const loadBibleChapter = async (bookId, chapterNum) => {
+  const loadBibleChapter = async (bookId, chapterNum, version = selectedBibleVersion) => {
+    if (!bookId) return;
     setLoadingBible(true);
     try {
-      const res = await fetch(`/api/bible/text?version=RVR1960&book=${encodeURIComponent(bookId)}&chapter=${chapterNum}`);
+      const res = await fetch(
+        `/api/bible/chapter?version=${encodeURIComponent(version)}&book=${encodeURIComponent(bookId)}&chapter=${chapterNum}`
+      );
       if (res.ok) {
         const data = await res.json();
-        setChapterVerses(data.verses || []);
+        const verses = data.results || data.verses || [];
+        setChapterVerses(verses);
+      } else {
+        setChapterVerses([]);
       }
     } catch (err) {
       console.error("Error loading chapter:", err);
+      setChapterVerses([]);
     } finally {
       setLoadingBible(false);
     }
@@ -223,9 +256,23 @@ export default function RemoteControl() {
 
   useEffect(() => {
     if (activeTab === "bible" && selectedBook) {
-      loadBibleChapter(selectedBook, selectedChapter);
+      loadBibleChapter(selectedBook, selectedChapter, selectedBibleVersion);
     }
-  }, [activeTab, selectedBook, selectedChapter]);
+  }, [activeTab, selectedBook, selectedChapter, selectedBibleVersion]);
+
+  const handleSelectBook = (bookId) => {
+    setSelectedBook(bookId);
+    const bookObj = bibleBooks.find((b) => b.id === bookId);
+    const maxCh = bookObj?.chaptersCount || 50;
+    if (selectedChapter > maxCh) {
+      setSelectedChapter(1);
+    }
+  };
+
+  const handleSelectVersion = (versionId) => {
+    setSelectedBibleVersion(versionId);
+    fetchBibleBooks(versionId);
+  };
 
   // TRIGGER SLIDE
   const handleTriggerSlide = (slide, index) => {
@@ -311,31 +358,39 @@ export default function RemoteControl() {
   };
 
   const handleTriggerVerse = (verse) => {
-    const bookObj = bibleBooks.find((b) => b.id === selectedBook);
-    const bookName = bookObj?.name || selectedBook;
-    const ref = `${bookName} ${selectedChapter}:${verse.verse}`;
+    const bookObj = bibleBooks.find((b) => b.id === selectedBook || b.name === verse.book);
+    const bookName = verse.book || bookObj?.name || selectedBook;
+    const chapterNum = verse.chapter || selectedChapter;
+    const ref = `${bookName} ${chapterNum}:${verse.verse}`;
     const text = `"${verse.text}"\n\n${ref}`;
+    const slideId = `bible-remote-${verse.verse}`;
 
-    sendProjectionMessage({
+    const slidePayload = {
       type: "UPDATE_SLIDE",
-      slideId: `bible-remote-${verse.verse}`,
+      slideId,
       slideText: text,
       slideImage: null,
+      slideImageStyle: {},
       overlays: [],
       slideStyle: {
-        fontSize: "48px",
+        fontSize: "44px",
         textAlign: "center",
-        verticalAlign: "center"
+        verticalAlign: "center",
+        fontWeight: "bold",
+        lineHeight: 1.3
       },
       transition: "fade",
       duration: 0.4
-    });
+    };
+
+    sendProjectionMessage(slidePayload);
+    sendProjectionMessage({ ...slidePayload, type: "TRIGGER_SLIDE" });
 
     setLiveState((prev) => ({
       ...prev,
       slideText: text,
       slideImage: null,
-      activeSlideId: `bible-remote-${verse.verse}`,
+      activeSlideId: slideId,
       isBlackout: false
     }));
   };
@@ -682,58 +737,191 @@ export default function RemoteControl() {
         )}
 
         {/* TAB 4: BIBLE */}
-        {activeTab === "bible" && (
-          <div className="flex flex-col gap-3 pb-24">
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-[10px] font-bold text-zinc-400 uppercase">Libro</label>
-                <select
-                  value={selectedBook}
-                  onChange={(e) => setSelectedBook(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-xs text-white outline-none mt-1"
-                >
-                  {bibleBooks.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        {activeTab === "bible" && (() => {
+          const activeBookObj = bibleBooks.find((b) => b.id === selectedBook);
+          const totalChapters = activeBookObj?.chaptersCount || 50;
+          const filteredVerses = chapterVerses.filter((v) => {
+            if (!bibleFilter.trim()) return true;
+            const q = bibleFilter.toLowerCase().trim();
+            return String(v.verse) === q || v.text.toLowerCase().includes(q);
+          });
 
-              <div>
-                <label className="text-[10px] font-bold text-zinc-400 uppercase">Capítulo</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="150"
-                  value={selectedChapter}
-                  onChange={(e) => setSelectedChapter(parseInt(e.target.value) || 1)}
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-xs text-white outline-none mt-1"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1.5 mt-1">
-              <span className="text-xs font-bold text-zinc-400">Versículos (Toca para proyectar)</span>
-              {loadingBible ? (
-                <div className="text-center py-8 text-zinc-500 text-xs animate-pulse">Cargando versículos...</div>
-              ) : (
-                <div className="flex flex-col gap-1.5 max-h-[400px] overflow-y-auto">
-                  {chapterVerses.map((v) => (
-                    <button
-                      key={v.verse}
-                      onClick={() => handleTriggerVerse(v)}
-                      className="p-2.5 bg-zinc-900 hover:bg-zinc-800 active:bg-primary/20 border border-zinc-800 rounded-lg text-left text-xs text-zinc-200 transition-colors"
-                    >
-                      <strong className="text-primary mr-1.5">v{v.verse}</strong>
-                      <span>{v.text}</span>
-                    </button>
-                  ))}
+          return (
+            <div className="flex flex-col gap-3 pb-24">
+              {/* Version & Book Selector */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px] text-primary">auto_stories</span>
+                    Versión
+                  </label>
+                  <select
+                    value={selectedBibleVersion}
+                    onChange={(e) => handleSelectVersion(e.target.value)}
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-xs text-white outline-none mt-1 font-semibold truncate"
+                  >
+                    {bibleVersions.length > 0 ? (
+                      bibleVersions.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.localAbbr || v.id} ({v.name?.slice(0, 18)})
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="RVR1960">RVR1960 - Reina Valera</option>
+                        <option value="NVI">NVI - Nueva Versión Int.</option>
+                        <option value="NTV">NTV - Nueva Trad. Viviente</option>
+                        <option value="LBLA">LBLA - Las Américas</option>
+                      </>
+                    )}
+                  </select>
                 </div>
-              )}
+
+                <div>
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px] text-amber-400">book</span>
+                    Libro
+                  </label>
+                  <select
+                    value={selectedBook}
+                    onChange={(e) => handleSelectBook(e.target.value)}
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-xs text-white outline-none mt-1 font-semibold truncate"
+                  >
+                    {bibleBooks.map((b) => (
+                      <option key={b.id} value={b.id}>
+                        {b.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Chapter Selector with Quick Steppers */}
+              <div className="bg-zinc-900/90 border border-zinc-800 rounded-xl p-2.5 flex flex-col gap-1.5">
+                <div className="flex items-center justify-between text-[11px] text-zinc-400">
+                  <span className="font-bold text-zinc-200">
+                    {activeBookObj?.name || "Libro"} - Capítulo {selectedChapter}
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-mono">
+                    Total: {totalChapters} {totalChapters === 1 ? "capítulo" : "capítulos"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedChapter((c) => Math.max(1, c - 1))}
+                    disabled={selectedChapter <= 1}
+                    className="h-10 w-11 bg-zinc-800 active:bg-zinc-700 disabled:opacity-30 disabled:pointer-events-none rounded-lg flex items-center justify-center text-white border border-zinc-700/80 transition-transform active:scale-95"
+                    title="Capítulo anterior"
+                  >
+                    <span className="material-symbols-outlined text-base">chevron_left</span>
+                  </button>
+
+                  <select
+                    value={selectedChapter}
+                    onChange={(e) => setSelectedChapter(parseInt(e.target.value) || 1)}
+                    className="flex-1 h-10 bg-zinc-800 border border-zinc-700 rounded-lg px-3 text-xs font-bold text-white outline-none text-center"
+                  >
+                    {Array.from({ length: totalChapters }, (_, i) => i + 1).map((ch) => (
+                      <option key={ch} value={ch}>
+                        Capítulo {ch}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={() => setSelectedChapter((c) => Math.min(totalChapters, c + 1))}
+                    disabled={selectedChapter >= totalChapters}
+                    className="h-10 w-11 bg-zinc-800 active:bg-zinc-700 disabled:opacity-30 disabled:pointer-events-none rounded-lg flex items-center justify-center text-white border border-zinc-700/80 transition-transform active:scale-95"
+                    title="Capítulo siguiente"
+                  >
+                    <span className="material-symbols-outlined text-base">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Verses Filter Input */}
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">
+                  search
+                </span>
+                <input
+                  type="text"
+                  placeholder="Filtrar versículo o texto del capítulo..."
+                  value={bibleFilter}
+                  onChange={(e) => setBibleFilter(e.target.value)}
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-8 pr-8 py-2 text-xs text-white placeholder-zinc-500 outline-none focus:border-primary transition-colors"
+                />
+                {bibleFilter && (
+                  <button
+                    onClick={() => setBibleFilter("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Verses List */}
+              <div className="flex flex-col gap-2 mt-1">
+                <div className="flex items-center justify-between text-[11px] px-1 text-zinc-400">
+                  <span className="font-semibold text-zinc-300">Versículos (Toca para proyectar)</span>
+                  <span className="font-mono text-[10px]">
+                    {filteredVerses.length} {filteredVerses.length === 1 ? "versículo" : "versículos"}
+                  </span>
+                </div>
+
+                {loadingBible ? (
+                  <div className="text-center py-12 flex flex-col items-center gap-2 text-zinc-400 text-xs animate-pulse">
+                    <span className="material-symbols-outlined text-2xl text-primary animate-spin">sync</span>
+                    <span>Cargando versículos de la Biblia...</span>
+                  </div>
+                ) : filteredVerses.length === 0 ? (
+                  <div className="text-center py-10 bg-zinc-900/50 rounded-xl border border-zinc-800 text-zinc-500 text-xs">
+                    {bibleFilter ? "No hay versículos que coincidan con la búsqueda." : "No hay versículos disponibles."}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {filteredVerses.map((v) => {
+                      const isLive =
+                        liveState.activeSlideId === `bible-remote-${v.verse}` ||
+                        (liveState.slideText && liveState.slideText.includes(v.text));
+
+                      return (
+                        <button
+                          key={v.verse}
+                          onClick={() => handleTriggerVerse(v)}
+                          className={`p-3 rounded-xl border text-left text-xs transition-all flex flex-col gap-1 active:scale-[0.98] ${
+                            isLive
+                              ? "bg-emerald-950/60 border-emerald-500 ring-2 ring-emerald-500/60 shadow-lg text-white"
+                              : "bg-zinc-900/90 border-zinc-800 hover:border-zinc-700 text-zinc-200"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span
+                              className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                isLive ? "bg-emerald-500 text-black font-extrabold" : "bg-zinc-800 text-primary"
+                              }`}
+                            >
+                              v{v.verse}
+                            </span>
+                            {isLive && (
+                              <span className="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                                EN PANTALLA
+                              </span>
+                            )}
+                          </div>
+                          <span className="leading-relaxed mt-0.5">{v.text}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </main>
 
       {/* Floating Bottom Presentation Controller (Thumb Reachable) */}
