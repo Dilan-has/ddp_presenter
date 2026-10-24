@@ -5,6 +5,7 @@ import CenterPanel from "./CenterPanel";
 import BibleCenterPanel from "./BibleCenterPanel";
 import MediaBin from "./MediaBin";
 import ReflowEditor from "./ReflowEditor";
+import TransitionsPopover from "./TransitionsPopover";
 
 import { sendProjectionMessage, onProjectionMessage } from "../../utils/networkSync";
 
@@ -1670,182 +1671,121 @@ export default function OperatorPanel() {
   return (
     <div className="bg-surface text-on-surface font-body-md text-body-md overflow-hidden h-screen flex flex-col">
       {/* 1. Header Toolbar */}
-      <header className="h-12 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-container-padding z-50">
-        <div className="flex items-center gap-4 text-on-surface-variant font-label-caps text-label-caps">
-          <div className="w-6 h-6 bg-primary rounded flex items-center justify-center">
-            <span className="material-symbols-outlined text-on-primary text-[16px]">settings_input_component</span>
+      <header className="h-14 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between gap-4 px-4 z-50 shadow-panel">
+        {/* Logo + navegación */}
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary-container to-accent rounded-lg flex items-center justify-center shadow-panel flex-shrink-0">
+            <span className="material-symbols-outlined text-white text-[18px]">settings_input_component</span>
           </div>
-          <nav className="flex gap-4">
-            <button 
-              onClick={() => setActiveTab("production-interface")} 
-              className={`hover:text-on-surface transition-colors uppercase ${activeTab === "production-interface" ? "text-primary font-bold" : ""}`}
-            >
-              Producción
-            </button>
-            <button 
-              onClick={() => setActiveTab("bibles-tab")} 
-              className={`hover:text-on-surface transition-colors uppercase ${activeTab === "bibles-tab" ? "text-primary font-bold" : ""}`}
-            >
-              Biblia
-            </button>
-            <button 
-              onClick={openSongEditor} 
-              className={`hover:text-on-surface transition-colors uppercase ${activeTab === "song-editor" ? "text-primary font-bold" : ""}`}
-            >
-              Editor de Canción
-            </button>
+          <nav className="segmented" aria-label="Secciones">
+            {[
+              { id: "production-interface", label: "Producción", icon: "slideshow", onClick: () => setActiveTab("production-interface") },
+              { id: "bibles-tab", label: "Biblia", icon: "menu_book", onClick: () => setActiveTab("bibles-tab") },
+              { id: "song-editor", label: "Editor", icon: "edit_note", onClick: openSongEditor },
+            ].map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={t.onClick}
+                aria-pressed={activeTab === t.id}
+                className="segmented-item h-8 px-3"
+              >
+                <span className="material-symbols-outlined text-[16px]">{t.icon}</span>
+                {t.label}
+              </button>
+            ))}
           </nav>
+          <TransitionsPopover
+            slideTransition={activeSlideTransition}
+            onSlideTransition={setActiveSlideTransition}
+            slideDuration={activeSlideDuration}
+            onSlideDuration={setActiveSlideDuration}
+            bgTransition={activeBgTransition}
+            onBgTransition={setActiveBgTransition}
+            bgDuration={activeBgDuration}
+            onBgDuration={setActiveBgDuration}
+            bgFit={activeBgFit}
+            onBgFit={handleUpdateBgFit}
+          />
         </div>
 
-        {/* Transition & Duration Controls */}
-        <div className="flex items-center gap-3 bg-surface-container rounded-lg px-2.5 py-1 border border-outline-variant">
-          {/* Slide Transition */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold text-primary uppercase flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">notes</span>
-              Texto:
-            </span>
-            <select 
-              value={activeSlideTransition} 
-              onChange={(e) => setActiveSlideTransition(e.target.value)}
-              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-bold"
-            >
-              <option value="none">Ninguna</option>
-              <option value="fade">Disolvencia</option>
-              <option value="zoom">Zoom</option>
-              <option value="slide">Desplazamiento</option>
-            </select>
-            <select 
-              value={activeSlideDuration} 
-              onChange={(e) => setActiveSlideDuration(parseFloat(e.target.value))}
-              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-mono font-bold"
-              title="Duración de transición de texto"
-            >
-              <option value={0.2}>0.2s</option>
-              <option value={0.4}>0.4s</option>
-              <option value={0.6}>0.6s</option>
-              <option value={0.8}>0.8s</option>
-              <option value={1.2}>1.2s</option>
-              <option value={1.5}>1.5s</option>
-              <option value={2.0}>2.0s</option>
-            </select>
-          </div>
-
-          <div className="w-[1px] h-4 bg-outline-variant" />
-
-          {/* Background Transition */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] font-bold text-tertiary-fixed uppercase flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">image</span>
-              Fondo:
-            </span>
-            <select 
-              value={activeBgTransition} 
-              onChange={(e) => setActiveBgTransition(e.target.value)}
-              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-bold"
-            >
-              <option value="none">Ninguna</option>
-              <option value="fade">Disolvencia</option>
-              <option value="zoom">Zoom</option>
-              <option value="slide">Desplazamiento</option>
-            </select>
-            <select 
-              value={activeBgDuration} 
-              onChange={(e) => setActiveBgDuration(parseFloat(e.target.value))}
-              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-mono font-bold"
-              title="Duración de transición de fondo"
-            >
-              <option value={0.2}>0.2s</option>
-              <option value={0.4}>0.4s</option>
-              <option value={0.6}>0.6s</option>
-              <option value={0.8}>0.8s</option>
-              <option value={1.0}>1.0s</option>
-              <option value={1.2}>1.2s</option>
-              <option value={1.5}>1.5s</option>
-              <option value={2.0}>2.0s</option>
-            </select>
-            <select
-              value={activeBgFit}
-              onChange={(e) => handleUpdateBgFit(e.target.value)}
-              className="bg-surface-container-highest border border-outline-variant rounded px-1.5 py-0.5 text-xs text-on-surface outline-none cursor-pointer font-bold"
-              title="Ajuste de Fondo en Pantalla"
-            >
-              <option value="fill">↔️ Exacto (100% pantalla)</option>
-              <option value="cover">🔲 Rellenar (Recortar)</option>
-              <option value="contain">🖼️ Completo (Con barras)</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Emergencies controls */}
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={handleClearAll} 
-            className="bg-error hover:bg-error-container hover:text-on-error-container text-on-error font-bold text-label-caps font-label-caps uppercase px-3 py-1 rounded shadow transition-all"
-            title="Limpiar todo (Letra y Fondo) (F1 / ESC)"
-          >
-            Borrar Todo
-          </button>
-          <button 
-            onClick={handleClearText} 
-            className="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-surface-container-highest rounded transition-all"
+        {/* Limpieza */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleClearText}
+            className="btn btn-ghost"
             title="Borrar solo texto / letra (F2)"
           >
-            Borrar Diapo
+            <span className="material-symbols-outlined text-[16px]">format_clear</span>
+            <span className="hidden xl:inline">Diapo</span>
+            <span className="kbd hidden 2xl:inline-flex">F2</span>
           </button>
-          <button 
-            onClick={handleClearBackground} 
-            className="px-3 py-1 text-label-caps font-label-caps uppercase text-on-surface-variant hover:bg-surface-container-highest rounded transition-all"
+          <button
+            onClick={handleClearBackground}
+            className="btn btn-ghost"
             title="Borrar solo fondo multimedia (F3)"
           >
-            Borrar Medios
+            <span className="material-symbols-outlined text-[16px]">hide_image</span>
+            <span className="hidden xl:inline">Medios</span>
+            <span className="kbd hidden 2xl:inline-flex">F3</span>
+          </button>
+          <button
+            onClick={handleClearAll}
+            className="btn btn-danger"
+            title="Limpiar todo (Letra y Fondo) (F1 / ESC)"
+          >
+            <span className="material-symbols-outlined text-[16px]">layers_clear</span>
+            Borrar todo
+            <span className="kbd hidden 2xl:inline-flex !bg-black/20 !border-transparent !text-on-error-container">F1</span>
           </button>
         </div>
 
-        {/* Output switches */}
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={openLiveOutputWindow}
-              className="flex flex-col items-end group"
-              title="Abrir pantalla de salida principal en máxima resolución"
-            >
-              <span className="text-[9px] font-label-caps uppercase text-on-surface-variant leading-none group-hover:text-primary">Salida Principal (4K/HD)</span>
-              <span className={`text-[10px] font-bold uppercase leading-tight ${liveWindowRef.current && !liveWindowRef.current.closed ? "text-tertiary-fixed animate-pulse" : "text-zinc-500"}`}>
-                {liveWindowRef.current && !liveWindowRef.current.closed ? "CONECTADO" : "ACTIVAR"}
-              </span>
-            </button>
-            <button
-              onClick={toggleLiveFullscreen}
-              className="p-1.5 hover:bg-surface-container-highest rounded text-on-surface-variant hover:text-primary transition-all"
-              title="Alternar Pantalla Completa en Salida Principal"
-            >
-              <span className="material-symbols-outlined text-[18px]">fullscreen</span>
-            </button>
-            <button 
-              onClick={openStageOutputWindow}
-              className="flex flex-col items-end group"
-              title="Abrir monitor de escenario"
-            >
-              <span className="text-[9px] font-label-caps uppercase text-on-surface-variant leading-none group-hover:text-primary">Monitor Escenario</span>
-              <span className={`text-[10px] font-bold uppercase leading-tight ${stageWindowRef.current && !stageWindowRef.current.closed ? "text-primary" : "text-zinc-500"}`}>
-                {stageWindowRef.current && !stageWindowRef.current.closed ? "CONECTADO" : "ACTIVAR"}
-              </span>
-            </button>
-          </div>
+        {/* Salidas + volumen */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {(() => {
+            const liveOn = !!(liveWindowRef.current && !liveWindowRef.current.closed);
+            const stageOn = !!(stageWindowRef.current && !stageWindowRef.current.closed);
+            return (
+              <>
+                <button
+                  onClick={openLiveOutputWindow}
+                  className="btn btn-secondary"
+                  title="Abrir pantalla de salida principal en máxima resolución"
+                >
+                  <span className={`w-2 h-2 rounded-full ${liveOn ? "bg-tertiary animate-pulse" : "bg-outline"}`} />
+                  Salida
+                </button>
+                <button
+                  onClick={toggleLiveFullscreen}
+                  className="btn btn-ghost btn-icon"
+                  title="Alternar Pantalla Completa en Salida Principal"
+                >
+                  <span className="material-symbols-outlined text-[18px]">fullscreen</span>
+                </button>
+                <button
+                  onClick={openStageOutputWindow}
+                  className="btn btn-secondary"
+                  title="Abrir monitor de escenario"
+                >
+                  <span className={`w-2 h-2 rounded-full ${stageOn ? "bg-primary animate-pulse" : "bg-outline"}`} />
+                  Escenario
+                </button>
+              </>
+            );
+          })()}
           <div className="flex items-center gap-2" title={`Volumen de Medios en Salida: ${masterVolume}%`}>
             <span className="material-symbols-outlined text-[18px] text-on-surface-variant">
               {masterVolume === 0 ? "volume_off" : masterVolume < 50 ? "volume_down" : "volume_up"}
             </span>
-            <input 
-              className="w-20 h-1 bg-outline-variant rounded-full appearance-none cursor-pointer accent-primary" 
-              type="range" 
-              min="0" 
-              max="100" 
+            <input
+              className="w-20 h-1 bg-outline-variant rounded-full appearance-none cursor-pointer accent-primary"
+              type="range"
+              min="0"
+              max="100"
               value={masterVolume}
               onChange={handleVolumeChange}
             />
-            <span className="text-[10px] font-mono text-zinc-400 w-6">{masterVolume}%</span>
+            <span className="text-mono-label text-on-surface-variant w-8 text-right">{masterVolume}%</span>
           </div>
         </div>
       </header>

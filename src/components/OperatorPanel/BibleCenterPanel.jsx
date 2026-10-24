@@ -87,8 +87,8 @@ export default function BibleCenterPanel({
   return (
     <main className="flex-1 flex flex-col bg-surface min-w-0">
       {/* 1. Header Toolbar */}
-      <header className="bg-surface-container border-b border-outline-variant px-4 py-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
+      <header className="bg-surface-container border-b border-outline-variant px-4 py-2 flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-2 2xl:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3 min-w-0 flex-shrink-0">
           <div className="w-8 h-8 rounded-lg bg-primary/20 text-primary flex items-center justify-center flex-shrink-0">
             <span className="material-symbols-outlined text-[20px]">menu_book</span>
           </div>
@@ -113,7 +113,7 @@ export default function BibleCenterPanel({
         </div>
 
         {/* Center / Navigation Controls */}
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+        <div className="flex items-center gap-2 flex-wrap min-w-0">
           {/* Version Selector */}
           <select
             value={selectedBibleVersion || "RVR1960"}
@@ -331,7 +331,7 @@ export default function BibleCenterPanel({
                 title="Guardar este capítulo completo como una canción/presentación en la biblioteca"
               >
                 <span className="material-symbols-outlined text-[14px]">save</span>
-                <span className="hidden xl:inline">Guardar</span>
+                <span>Guardar</span>
               </button>
             )}
 
@@ -342,7 +342,7 @@ export default function BibleCenterPanel({
                 title="Cargar y proyectar este capítulo directamente en la pestaña de Producción"
               >
                 <span className="material-symbols-outlined text-[14px]">play_circle</span>
-                <span className="hidden md:inline">Cargar Diapos</span>
+                <span>Cargar Diapos</span>
               </button>
             )}
           </div>

@@ -27,13 +27,118 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #0b1326; /* surface color */
-    color: #dae2fd; /* on-surface color */
+    background-color: #0d0f14; /* surface color */
+    color: #eceff6; /* on-surface color */
     font-family: 'Inter', sans-serif;
   }
   
   body {
     overscroll-behavior: none;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #0d0f14, 0 0 0 4px #6ea8ff;
+  }
+
+  ::selection {
+    background: rgba(77, 142, 255, 0.35);
+  }
+}
+
+@layer components {
+  /* Botones: .btn + variante (.btn-primary | .btn-secondary | .btn-ghost | .btn-danger | .btn-icon) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md text-body-sm font-semibold
+           select-none whitespace-nowrap transition-all duration-150
+           disabled:opacity-40 disabled:pointer-events-none active:scale-[0.97];
+  }
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-container to-accent-container text-white hover:brightness-110 shadow-panel;
+  }
+  .btn-secondary {
+    @apply bg-surface-container-highest text-on-surface border border-outline-variant hover:border-outline hover:bg-surface-bright;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface;
+  }
+  .btn-danger {
+    @apply bg-error-container text-on-error-container hover:brightness-125;
+  }
+  .btn-icon {
+    @apply w-8 px-0;
+  }
+  .btn-lg {
+    @apply h-11 px-5 text-body-md rounded-lg;
+  }
+
+  /* Campos */
+  .input,
+  .select {
+    @apply h-8 px-2.5 rounded-md bg-surface-container-lowest border border-outline-variant text-body-sm text-on-surface
+           placeholder:text-outline outline-none transition-colors duration-150 hover:border-outline
+           focus:border-primary-container;
+  }
+  .select {
+    @apply cursor-pointer font-semibold pr-7;
+  }
+
+  /* Etiquetas */
+  .field-label {
+    @apply text-label-caps uppercase text-on-surface-variant;
+  }
+  .panel-title {
+    @apply text-label-caps uppercase text-on-surface-variant flex items-center gap-1.5;
+  }
+
+  /* Chips y badges */
+  .chip {
+    @apply inline-flex items-center gap-1 h-6 px-2 rounded-full text-body-sm font-semibold
+           bg-surface-container-highest text-on-surface-variant border border-outline-variant
+           hover:text-on-surface hover:border-outline transition-colors duration-150 cursor-pointer;
+  }
+  .chip-active {
+    @apply bg-primary-container/20 text-primary border-primary-container/60;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 h-5 px-1.5 rounded-full text-label-caps uppercase;
+  }
+  .badge-live {
+    @apply bg-tertiary-container text-on-tertiary-container;
+  }
+  .badge-next {
+    @apply bg-warning/20 text-warning;
+  }
+
+  /* Control segmentado */
+  .segmented {
+    @apply inline-flex items-center p-0.5 rounded-lg bg-surface-container-lowest border border-outline-variant gap-0.5;
+  }
+  .segmented-item {
+    @apply inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-md text-body-sm font-semibold
+           text-on-surface-variant hover:text-on-surface transition-all duration-150 cursor-pointer;
+  }
+  .segmented-item[data-active="true"],
+  .segmented-item[aria-pressed="true"],
+  .segmented-item[aria-selected="true"] {
+    @apply bg-surface-bright text-on-surface shadow-panel;
+  }
+
+  /* Tarjetas / paneles */
+  .card {
+    @apply bg-surface-container rounded-lg border border-outline-variant/60 shadow-panel;
+  }
+  .popover {
+    @apply bg-surface-container-high rounded-lg shadow-pop p-2;
+  }
+
+  /* Atajo de teclado */
+  .kbd {
+    @apply inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded
+           bg-surface-container-highest border border-outline-variant text-[10px] font-mono text-on-surface-variant;
   }
 }
 
@@ -43,6 +148,7 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar {
+  display: block;
   width: 6px;
   height: 6px;
 }
@@ -52,12 +158,12 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #424754; /* outline-variant */
+  background: #333a4d; /* outline-variant */
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #8c909f; /* outline */
+  background: #8089a0; /* outline */
 }
 
 /* Keyframes for transitions */

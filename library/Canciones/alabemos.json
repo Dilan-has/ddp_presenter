@@ -79,40 +79,6 @@
         "textAlign": "center",
         "verticalAlign": "center"
       }
-    },
-    {
-      "id": "slide-1791069716307-6",
-      "label": "S6",
-      "text": "Te Alabamos Dios",
-      "imageUrl": null,
-      "imageStyle": null,
-      "backgroundUrl": "/media/Logo IPUIC 2.png",
-      "backgroundType": "image",
-      "overlays": [],
-      "style": {
-        "fontSize": "110px",
-        "textAlign": "center",
-        "verticalAlign": "flex-end",
-        "layout": "standard",
-        "fullWidth": false
-      }
-    },
-    {
-      "id": "slide-1791071979349",
-      "label": "IMG 7",
-      "text": "",
-      "imageUrl": "/media/montanas_noche.png",
-      "imageStyle": {
-        "position": "only-image",
-        "fit": "contain",
-        "size": "80%"
-      },
-      "overlays": [],
-      "style": {
-        "fontSize": "56px",
-        "textAlign": "center",
-        "verticalAlign": "center"
-      }
     }
   ]
 }
