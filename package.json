@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "electron.cjs",
   "scripts": {
     "dev:client": "vite",
     "dev:server": "node --watch server.js",
@@ -10,25 +11,54 @@
     "setup:bible": "node scripts/download_bibles.js",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "electron .",
+    "electron:build": "npm run build && npx electron-builder",
+    "electron:build:win": "npm run build && npx electron-builder --win",
+    "electron:build:mac": "npm run build && npx electron-builder --mac"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.3.1",
     "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "ws": "^8.22.0"
+    "express": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "ws": "^8.23.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.1.0",
-    "autoprefixer": "^10.5.4",
-    "concurrently": "^10.0.5",
-    "oxlint": "^1.79.0",
-    "postcss": "^8.5.26",
-    "tailwindcss": "^3.4.19",
-    "vite": "^8.2.2"
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "autoprefixer": "^10.7.0",
+    "concurrently": "^10.0.7",
+    "electron": "45.4.1",
+    "electron-builder": "^26.18.0",
+    "oxlint": "^1.94.0",
+    "postcss": "^8.5.33",
+    "tailwindcss": "3.4.19",
+    "vite": "^8.3.8"
+  },
+  "build": {
+    "appId": "com.ddpresenter.app",
+    "electronVersion": "45.4.1",
+    "productName": "DDP Presenter",
+    "asar": false,
+    "files": [
+      "dist/**/*",
+      "server.js",
+      "electron.cjs",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.entertainment"
+    }
   }
 }

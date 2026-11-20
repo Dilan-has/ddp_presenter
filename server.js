@@ -11,6 +11,7 @@ import { WebSocketServer, WebSocket } from "ws";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const DATA_DIR = process.env.DATA_DIR || __dirname;
 
 const app = express();
 const server = http.createServer(app);
@@ -23,18 +24,18 @@ app.use(express.json());
 // Ensure directories exist
 const DIRECTORIES = ["library", "playlists", "media", "bibles"];
 for (const dir of DIRECTORIES) {
-  const fullPath = path.join(__dirname, dir);
+  const fullPath = path.join(DATA_DIR, dir);
   if (!existsSync(fullPath)) {
     await fs.mkdir(fullPath, { recursive: true });
   }
 }
 
 // Serve media folder static files
-app.use("/media", express.static(path.join(__dirname, "media")));
+app.use("/media", express.static(path.join(DATA_DIR, "media")));
 
 // Helper to get all files in a folder (flat)
 async function readJsonFiles(dirName) {
-  const dirPath = path.join(__dirname, dirName);
+  const dirPath = path.join(DATA_DIR, dirName);
   try {
     const files = await fs.readdir(dirPath);
     const jsonFiles = files.filter(f => f.endsWith(".json"));
@@ -89,19 +90,19 @@ async function scanLibraryDir(baseDir, relativePath = "") {
 
 // Helper to find a file path by song ID
 async function findLibraryItemPath(id) {
-  const items = await scanLibraryDir(path.join(__dirname, "library"));
+  const items = await scanLibraryDir(path.join(DATA_DIR, "library"));
   const match = items.find(item => item.id === id);
   return match ? match.filePath : null;
 }
 
 // LIBRARY ENDPOINTS
 app.get("/api/library", async (req, res) => {
-  const songs = await scanLibraryDir(path.join(__dirname, "library"));
+  const songs = await scanLibraryDir(path.join(DATA_DIR, "library"));
   res.json(songs);
 });
 
 app.get("/api/library/songs", async (req, res) => {
-  const songs = await scanLibraryDir(path.join(__dirname, "library"));
+  const songs = await scanLibraryDir(path.join(DATA_DIR, "library"));
   res.json(songs);
 });
 
@@ -111,7 +112,7 @@ app.get("/api/library/song", async (req, res) => {
     return res.status(400).json({ error: "Missing filePath query parameter" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", filePath);
+    const fullPath = path.join(DATA_DIR, "library", filePath);
     if (!existsSync(fullPath)) {
       return res.status(404).json({ error: "Song file not found" });
     }
@@ -123,7 +124,7 @@ app.get("/api/library/song", async (req, res) => {
 });
 
 app.get("/api/library/sections", async (req, res) => {
-  const libraryPath = path.join(__dirname, "library");
+  const libraryPath = path.join(DATA_DIR, "library");
   try {
     const entries = await fs.readdir(libraryPath, { withFileTypes: true });
     const folders = entries.filter(e => e.isDirectory()).map(e => e.name);
@@ -140,7 +141,7 @@ app.post("/api/library/sections", async (req, res) => {
     return res.status(400).json({ error: "Missing section name" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", name);
+    const fullPath = path.join(DATA_DIR, "library", name);
     await fs.mkdir(fullPath, { recursive: true });
     res.json({ success: true, name });
   } catch (err) {
@@ -155,7 +156,7 @@ app.delete("/api/library/sections", async (req, res) => {
     return res.status(400).json({ error: "Missing section name parameter" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", name);
+    const fullPath = path.join(DATA_DIR, "library", name);
     if (existsSync(fullPath)) {
       await fs.rm(fullPath, { recursive: true, force: true });
     }
@@ -172,7 +173,7 @@ app.get("/api/library/get", async (req, res) => {
     return res.status(400).json({ error: "Missing filePath query parameter" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", filePath);
+    const fullPath = path.join(DATA_DIR, "library", filePath);
     if (!existsSync(fullPath)) {
       return res.status(404).json({ error: "Song file not found" });
     }
@@ -191,7 +192,7 @@ app.post("/api/library/save", async (req, res) => {
     return res.status(400).json({ error: "Missing filePath query parameter" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", filePath);
+    const fullPath = path.join(DATA_DIR, "library", filePath);
     // Ensure parent directory exists (in case it is a new subfolder)
     await fs.mkdir(path.dirname(fullPath), { recursive: true });
     await fs.writeFile(fullPath, JSON.stringify(songData, null, 2), "utf8");
@@ -208,7 +209,7 @@ app.delete("/api/library/delete", async (req, res) => {
     return res.status(400).json({ error: "Missing filePath query parameter" });
   }
   try {
-    const fullPath = path.join(__dirname, "library", filePath);
+    const fullPath = path.join(DATA_DIR, "library", filePath);
     if (existsSync(fullPath)) {
       await fs.unlink(fullPath);
     }
@@ -223,8 +224,8 @@ app.get("/api/library/:id", async (req, res) => {
   const { id } = req.params;
   const relPath = await findLibraryItemPath(id);
   const targetPath = relPath 
-    ? path.join(__dirname, "library", relPath) 
-    : path.join(__dirname, "library", `${id}.json`);
+    ? path.join(DATA_DIR, "library", relPath) 
+    : path.join(DATA_DIR, "library", `${id}.json`);
 
   if (!existsSync(targetPath)) {
     return res.status(404).json({ error: "Song not found" });
@@ -244,8 +245,8 @@ app.post("/api/library/:id", async (req, res) => {
 
   const relPath = await findLibraryItemPath(id);
   const targetPath = relPath 
-    ? path.join(__dirname, "library", relPath) 
-    : path.join(__dirname, "library", `${id}.json`);
+    ? path.join(DATA_DIR, "library", relPath) 
+    : path.join(DATA_DIR, "library", `${id}.json`);
 
   try {
     await fs.writeFile(targetPath, JSON.stringify(songData, null, 2), "utf8");
@@ -263,7 +264,7 @@ app.get("/api/playlists", async (req, res) => {
 
 app.get("/api/playlists/:id", async (req, res) => {
   const { id } = req.params;
-  const filePath = path.join(__dirname, "playlists", `${id}.json`);
+  const filePath = path.join(DATA_DIR, "playlists", `${id}.json`);
   if (!existsSync(filePath)) {
     return res.status(404).json({ error: "Playlist not found" });
   }
@@ -277,7 +278,7 @@ app.post("/api/playlists/:id", async (req, res) => {
   
   if (!playlistData.id) playlistData.id = id;
   
-  const filePath = path.join(__dirname, "playlists", `${id}.json`);
+  const filePath = path.join(DATA_DIR, "playlists", `${id}.json`);
   await fs.writeFile(filePath, JSON.stringify(playlistData, null, 2), "utf8");
   res.json({ success: true, playlist: playlistData });
 });
@@ -285,7 +286,7 @@ app.post("/api/playlists/:id", async (req, res) => {
 app.delete("/api/playlists/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const filePath = path.join(__dirname, "playlists", `${id}.json`);
+    const filePath = path.join(DATA_DIR, "playlists", `${id}.json`);
     if (existsSync(filePath)) {
       await fs.unlink(filePath);
     }
@@ -298,7 +299,7 @@ app.delete("/api/playlists/:id", async (req, res) => {
 
 // MEDIA ENDPOINTS
 app.get("/api/media", async (req, res) => {
-  const mediaPath = path.join(__dirname, "media");
+  const mediaPath = path.join(DATA_DIR, "media");
   try {
     const files = await fs.readdir(mediaPath);
     const results = files.map(file => {
@@ -330,7 +331,7 @@ app.post("/api/media/upload", express.raw({ type: "*/*", limit: "2048mb" }), asy
     return res.status(400).json({ error: "Missing x-filename header" });
   }
   try {
-    const filePath = path.join(__dirname, "media", filename);
+    const filePath = path.join(DATA_DIR, "media", filename);
     await fs.writeFile(filePath, req.body);
     res.json({ success: true, filename, url: `/media/${filename}` });
   } catch (err) {
@@ -346,7 +347,7 @@ app.delete("/api/media/:filename", async (req, res) => {
   }
   try {
     const safeFilename = path.basename(filename);
-    const filePath = path.join(__dirname, "media", safeFilename);
+    const filePath = path.join(DATA_DIR, "media", safeFilename);
     await fs.unlink(filePath);
     res.json({ success: true, filename: safeFilename });
   } catch (err) {
@@ -486,7 +487,7 @@ async function getBibleVersionData(versionId = "RVR1960") {
     return { version: versionObj, data: loadedVersions.get(targetId) };
   }
 
-  const dirPath = path.join(__dirname, "bible_data");
+  const dirPath = path.join(DATA_DIR, "bible_data");
   const filePath = path.join(dirPath, versionObj.file);
 
   // 1. If file already exists locally on disk, load and parse it

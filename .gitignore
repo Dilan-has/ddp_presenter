@@ -24,3 +24,5 @@ dist-ssr
 /media/*
 bible_data
 bible_data_temp
+.claude
+/release

@@ -42,6 +42,8 @@ export default function SidebarLeft({
   const [newSectionName, setNewSectionName] = useState("");
   const [showAddPlaylistInput, setShowAddPlaylistInput] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
+  const [createSongSection, setCreateSongSection] = useState(null);
+  const [newSongTitle, setNewSongTitle] = useState("");
 
   const [collapsedLibraryHeader, setCollapsedLibraryHeader] = useState(false);
   const [collapsedPlaylistHeader, setCollapsedPlaylistHeader] = useState(false);
@@ -114,6 +116,14 @@ export default function SidebarLeft({
     onCreatePlaylist(newPlaylistName.trim());
     setNewPlaylistName("");
     setShowAddPlaylistInput(false);
+  };
+
+  const handleCreateSongSubmit = (e, section) => {
+    e.preventDefault();
+    if (!newSongTitle.trim()) return;
+    onCreateSongInSection(section, newSongTitle.trim());
+    setNewSongTitle("");
+    setCreateSongSection(null);
   };
 
   // Filter songs by search query
@@ -213,12 +223,8 @@ export default function SidebarLeft({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              const title = window.prompt(
-                                `Nombre de la nueva presentación para la sección "${sectionName}":`
-                              );
-                              if (title && title.trim()) {
-                                onCreateSongInSection(section, title.trim());
-                              }
+                              setCreateSongSection(createSongSection === section ? null : section);
+                              setNewSongTitle("");
                             }}
                             className="opacity-0 group-hover:opacity-100 transition-opacity text-primary hover:text-primary-fixed-dim p-0.5 flex items-center"
                             title="Crear presentación en esta sección"
@@ -247,6 +253,29 @@ export default function SidebarLeft({
                           </span>
                         </div>
                       </div>
+
+                      {/* Inline create song form */}
+                      {createSongSection === section && (
+                        <form
+                          onSubmit={(e) => handleCreateSongSubmit(e, section)}
+                          className="flex gap-1.5 px-2 mt-1"
+                        >
+                          <input
+                            type="text"
+                            placeholder="Nombre de la presentación..."
+                            value={newSongTitle}
+                            onChange={(e) => setNewSongTitle(e.target.value)}
+                            autoFocus
+                            className="flex-1 bg-surface-container-highest border border-outline-variant rounded px-2 py-1 text-xs text-on-surface outline-none"
+                          />
+                          <button
+                            type="submit"
+                            className="bg-primary text-on-primary font-bold text-xs px-2.5 rounded hover:bg-primary/80"
+                          >
+                            Crear
+                          </button>
+                        </form>
+                      )}
 
                       {/* Song list inside folder */}
                       {!isCollapsed && (
